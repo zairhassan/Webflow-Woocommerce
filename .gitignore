@@ -1,0 +1,38 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build
+dist/
+build/
+.next/
+out/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database / Temp
+migration_data*.sql
+debug_output.txt
+test_out.*
+*.log
+tmp/
+C:\Users\ORHAN COMPUTER\.gemini\antigravity\scratch\WEbflow Ecommerce 1\backend\migration_data_fixed.sql
+C:\Users\ORHAN COMPUTER\.gemini\antigravity\scratch\WEbflow Ecommerce 1\backend\migration_data.sql

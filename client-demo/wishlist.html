@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Aura Boutique | My Wishlist</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <script src="../sdk/engine_v5_final.js" data-api-url="http://127.0.0.1:5001"
+        data-store-key="pk_live_6bf90196f1ba428e8f1ff44fa3d506df"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .bg-transition {
+            transition: background 1s ease-in-out, background-color 1.5s ease;
+        }
+
+        :root {
+            --aura-theme: #F27D26;
+            --aura-glow: rgba(242, 125, 38, 0.2);
+            --aura-grad: radial-gradient(circle at 50% 50%, #F27D26 0%, #A34500 100%);
+            --luxury-bg: #ffffff;
+            --luxury-border: rgba(0, 0, 0, 0.08);
+            --luxury-text: #111;
+            --luxury-muted: #666;
+        }
+
+        body {
+            background-color: var(--luxury-bg);
+            color: var(--luxury-text);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* ELITE SUB-HERO SECTION */
+        .cart-hero {
+            position: relative;
+            width: 100%;
+            height: 45vh;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: var(--aura-grad);
+            z-index: 0;
+        }
+
+        .hero-shapes {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding-top: 60px;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(48px, 8vw, 84px);
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.04em;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-subtitle {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5em;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        /* TRANSPARENT NAVIGATION (INDEX STYLE) */
+        .luxury-nav {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 30px 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+        }
+
+        .logo-circle {
+            width: 44px;
+            height: 44px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .luxury-nav:hover .logo-circle {
+            transform: rotate(15deg);
+        }
+
+        .nav-pill {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 99px;
+            padding: 10px 40px;
+            display: flex;
+            gap: 40px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        .nav-link:hover {
+            opacity: 1;
+        }
+
+        /* WOOCOMMERCE STYLE CONTENT LAYOUT */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto 100px;
+            position: relative;
+            z-index: 10;
+            padding: 80px 5%;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            align-items: stretch;
+        }
+
+        .content-card {
+            background: white;
+            border: 1px solid var(--luxury-border);
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 30px 40px;
+            border-bottom: 1px solid var(--luxury-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .cart-items-wrapper {
+            padding: 0;
+        }
+
+        /* ITEM LIST STYLING - COMPACT ELITE */
+        #wishlist-items-container .wfc-cart-item {
+            display: flex;
+            gap: 40px;
+            padding: 30px 40px;
+            border-bottom: 1px solid var(--luxury-border);
+            animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) both;
+            align-items: center;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #wishlist-items-container .wfc-item-img-wrap {
+            width: 90px;
+            height: 110px;
+            border-radius: 4px;
+            background: #fdfdfd;
+            border: 1px solid #f0f0f0;
+            overflow: hidden;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #wishlist-items-container .wfc-item-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            mix-blend-mode: multiply;
+        }
+
+        #wishlist-items-container .wfc-item-info {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        #wishlist-items-container .wfc-item-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 2px;
+            color: #000;
+        }
+
+        #wishlist-items-container .wfc-item-variant {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--luxury-muted);
+            margin-bottom: 6px;
+        }
+
+        #wishlist-items-container .wfc-item-price {
+            font-size: 14px;
+            font-weight: 600;
+            color: #000;
+        }
+
+        /* COMPACT QUANTITY CONTROLS */
+        #wishlist-items-container .wfc-item-qty {
+            display: flex;
+            align-items: center;
+            background: #f8f8f8;
+            border-radius: 4px;
+            height: 34px;
+            padding: 0 2px;
+        }
+
+        #wishlist-items-container .wfc-item-qty button {
+            width: 28px;
+            height: 28px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            transition: opacity 0.2s;
+        }
+
+        #wishlist-items-container .wfc-item-qty button:hover {
+            opacity: 0.5;
+        }
+
+        #wishlist-items-container .wfc-qty-input {
+            width: 30px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            font-weight: 800;
+            font-size: 12px;
+            pointer-events: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* DISCRETE REMOVE BUTTON */
+        #wishlist-items-container .wfc-remove {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            color: #ccc;
+            transition: all 0.3s;
+            margin-left: 10px;
+        }
+
+        #wishlist-items-container .wfc-remove:hover {
+            color: var(--aura-theme, #ff4d4d);
+            transform: rotate(90deg);
+        }
+
+        /* SIDEBAR / SUMMARY */
+        .sidebar {
+            position: sticky;
+            top: 120px;
+        }
+
+        .summary-details {
+            padding: 40px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 15px;
+            color: var(--luxury-muted);
+        }
+
+        .summary-row.total {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #f9f9f9;
+            color: #000;
+            font-weight: 800;
+            font-size: 24px;
+        }
+
+        /* COUPON SECTION */
+        .coupon-section {
+            margin-top: 35px;
+            padding: 25px;
+            background: #fafafa;
+            border-radius: 8px;
+            border: 1px dashed var(--luxury-border);
+        }
+
+        .coupon-title {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .coupon-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .coupon-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--luxury-border);
+            border-radius: 6px;
+            font-family: 'Inter';
+            font-size: 13px;
+        }
+
+        .coupon-apply-btn {
+            background: #000;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .coupon-apply-btn:hover {
+            background: var(--aura-theme);
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: #000;
+            color: white;
+            border: none;
+            padding: 22px;
+            font-size: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            border-radius: 8px;
+            margin-top: 40px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .checkout-btn:hover {
+            background: var(--aura-theme);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px var(--aura-glow);
+        }
+
+        /* GLOBAL COMPONENTS SYNC */
+        .glass {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .site-footer {
+            padding: 80px 5% 40px;
+            background: var(--aura-bg);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            position: relative;
+            z-index: 10;
+            transition: background-color 1.5s ease;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+            max-width: 1400px;
+            margin: 0 auto 60px;
+        }
+
+        .footer-brand {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 16px;
+            transition: color 1.5s ease;
+        }
+
+        .footer-brand span {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .footer-about {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.4);
+            line-height: 1.7;
+            max-width: 300px;
+        }
+
+        .footer-heading {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #fff;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-copyright {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+            justify-content: center;
+        }
+
+        .footer-social a {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 18px;
+        }
+
+        .footer-social a:hover {
+            background: var(--aura-theme);
+            color: #fff;
+            box-shadow: 0 5px 15px var(--aura-glow);
+        }
+
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                padding: 0 20px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 40px;
+            }
+
+            .hero-title {
+                font-size: 56px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="relative w-full flex flex-col overflow-hidden text-white" style="background: var(--aura-grad);">
+        <!-- Global Header -->
+        <div id="header-placeholder"></div>
+
+        <!-- Sub-Hero Content (Integrated into Header for exact sync) -->
+        <div class="cart-hero-content pt-48 pb-20 px-6 text-center relative z-10">
+            <span class="text-sm font-bold tracking-[0.4em] uppercase opacity-80 mb-4 block">Your Saved Items</span>
+            <h1 class="text-6xl md:text-8xl font-serif italic mb-0">My Wishlist</h1>
+        </div>
+
+    </div>
+
+
+    <main class="main-content">
+        <!-- Product List Section -->
+        <div class="content-card">
+            <div class="card-header">
+                <h2 class="card-title">Saved Items</h2>
+                <span id="wishlist-count" style="font-size:13px; opacity:0.6; font-weight:700;">Loading...</span>
+            </div>
+
+            <div class="cart-items-wrapper">
+                <div id="wishlist-items-container">
+                    <div style="padding: 100px; text-align: center; opacity: 0.3;">
+                        Preparing your boutique selections...
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 30px 40px; background: #fafafa; border-top: 1px solid var(--luxury-border);">
+                <a href="shop.html"
+                    style="color:#000; text-decoration:none; font-weight:800; font-size:12px; letter-spacing:0.1em;">←
+                    CONTINUE SHOPPING</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- ═══════════════ -->
+    <!-- FOOTER          -->
+    <!-- ═══════════════ -->
+    <div id="footer-placeholder"></div>
+    <script src="global.js"></script>
+
+    <!-- Hidden Containers for Engine Sync -->
+    <!-- Custom Renderer for Wishlist -->
+    <script>
+        // Theme synchronization from index.html
+        (function () {
+            const THEMES = {
+                orange: {
+                    hex: '#F27D26',
+                    grad: 'radial-gradient(circle at 50% 50%, #F27D26 0%, #A34500 100%)'
+                },
+                olive: {
+                    hex: '#5A5A40',
+                    grad: 'radial-gradient(circle at 50% 50%, #5A5A40 0%, #2A2A1A 100%)'
+                },
+                purple: {
+                    hex: '#7B61FF',
+                    grad: 'radial-gradient(circle at 50% 50%, #7B61FF 0%, #3B217F 100%)'
+                }
+            };
+
+            function updateTheme(colorKey) {
+                if (!THEMES[colorKey]) return;
+                const dynamicBg = document.getElementById('dynamic-bg');
+                if (dynamicBg) dynamicBg.style.background = THEMES[colorKey].grad;
+
+                // Abstract logo animation effect
+                const logo = document.getElementById('abstract-logo');
+                if (logo) {
+                    logo.style.transform = 'scale(0.8)';
+                    logo.style.opacity = '0';
+                    setTimeout(() => {
+                        logo.style.transform = 'scale(1)';
+                        logo.style.opacity = '0.15';
+                    }, 400);
+                }
+            }
+
+            // Check for saved theme on start
+            try {
+                const savedTheme = localStorage.getItem('aura_active_theme_key');
+                if (savedTheme) {
+                    updateTheme(savedTheme);
+                }
+            } catch (e) {
+                console.warn('LocalStorage access blocked:', e);
+            }
+        })();
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Give engine a moment to init if necessary
+            setTimeout(renderWishlist, 100);
+        });
+
+        async function renderWishlist() {
+            const container = document.getElementById('wishlist-items-container');
+            const countEl = document.getElementById('wishlist-count');
+
+            if (!window.__commerceEngine) {
+                container.innerHTML = '<div style="padding:40px; text-align:center;">Commerce engine failed to load.</div>';
+                return;
+            }
+
+            try {
+                const token = window.__commerceEngine.getCustomerToken ? window.__commerceEngine.getCustomerToken() : null;
+                let wishlistProducts = [];
+
+                if (token) {
+                    // Logged in: Fetch full wishlist from DB
+                    const data = await window.__commerceEngine.api('/customer/wishlist');
+                    wishlistProducts = data.wishlist || [];
+                } else {
+                    // Guest: Fetch product details based on local IDs
+                    const wishlistIds = window.__commerceEngine.getWishlist();
+                    if (wishlistIds.length > 0) {
+                        const data = await window.__commerceEngine.api(`/public/products?ids=${wishlistIds.join(',')}`);
+                        wishlistProducts = data.products || [];
+                        
+                        // Populate mapping for guest so heart icons work on other pages
+                        if (window.__commerceEngine.saveWishlistMap) {
+                            const map = window.__commerceEngine.getWishlistMap ? window.__commerceEngine.getWishlistMap() : {};
+                            wishlistProducts.forEach(p => {
+                                if (p.id && p.slug) {
+                                    map[p.id] = p.slug;
+                                    map[p.slug] = p.id;
+                                }
+                            });
+                            window.__commerceEngine.saveWishlistMap(map);
+                        }
+                    }
+                }
+
+                // Ensure unique items by productId (belt and suspenders)
+                const seenNodes = new Set();
+                wishlistProducts = wishlistProducts.filter(p => {
+                    const pid = p.productId || p.id;
+                    if (seenNodes.has(pid)) return false;
+                    seenNodes.add(pid);
+                    return true;
+                });
+
+                countEl.textContent = `${wishlistProducts.length} Items`;
+
+                if (wishlistProducts.length === 0) {
+                    container.innerHTML = `
+                        <div style="padding: 100px; text-align: center; opacity: 0.5;">
+                            <p style="font-family: 'Playfair Display', serif; font-size: 24px; font-style: italic; margin-bottom: 10px;">Your wishlist is empty</p>
+                            <p style="font-size: 13px;">Discover something beautiful to save for later.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const symbol = window.__commerceEngine.config?.currencySymbol || '$';
+
+                // Reuse existing cart CSS classes for exact styling
+                container.innerHTML = wishlistProducts.map(item => {
+                    const pid = item.productId || item.id;
+                    const imageUrl = item.imageUrl || item.featuredImage;
+                    const price = item.price || item.basePrice;
+                    
+                    return `
+                        <div class="wfc-cart-item">
+                            <a href="product.html?slug=${item.slug}" class="wfc-item-img-wrap">
+                                <img src="${window.__commerceEngine.getImageUrl(imageUrl)}" class="wfc-item-img" alt="${item.title}">
+                            </a>
+                            <div class="wfc-item-info">
+                                <div>
+                                    <h3 class="wfc-item-title"><a href="product.html?slug=${item.slug}" style="color:inherit; text-decoration:none;">${item.title}</a></h3>
+                                    <div class="wfc-item-price">${symbol}${parseFloat(price).toFixed(2)}</div>
+                                </div>
+                                <div style="display:flex; gap:10px; align-items:center;">
+                                    <button onclick="window.location.href='product.html?slug=${item.slug}'" style="background:#000; color:#fff; border:none; padding:10px 20px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; border-radius:40px; cursor:pointer;">View Product</button>
+                                    <button class="wfc-remove" onclick="removeWishlistItem('${pid}')" title="Remove">✕</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = '<div style="padding:40px; text-align:center;">Failed to load wishlist items.</div>';
+            }
+        }
+
+        window.removeWishlistItem = async function (id) {
+            if (window.__commerceEngine) {
+                await window.__commerceEngine.toggleWishlist(id);
+                renderWishlist();
+            }
+        };
+    </script>
+</body>
+
+</html>

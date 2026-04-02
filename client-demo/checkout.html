@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Boutique | Checkout</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <script src="../sdk/engine_v5_final.js" data-api-url="http://127.0.0.1:5001"
+        data-store-key="pk_live_6bf90196f1ba428e8f1ff44fa3d506df"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        :root {
+            --aura-theme: #F27D26;
+            --aura-glow: rgba(242, 125, 38, 0.2);
+            --aura-grad: radial-gradient(circle at 50% 50%, #F27D26 0%, #A34500 100%);
+            --luxury-bg: #f9f9f9;
+            --luxury-border: rgba(0, 0, 0, 0.08);
+            --luxury-text: #111;
+            --luxury-muted: #666;
+        }
+
+        body {
+            background-color: var(--luxury-bg);
+            color: var(--luxury-text);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .glass {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* CHECKOUT GRID */
+        .checkout-container {
+            max-width: 1300px;
+            margin: 140px auto;
+            position: relative;
+            z-index: 10;
+            padding: 0 40px;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 60px;
+            align-items: start;
+        }
+
+        .content-card {
+            background: white;
+            border: 1px solid var(--luxury-border);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            padding: 48px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-title span {
+            width: 32px;
+            height: 32px;
+            background: var(--aura-theme);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-family: 'Inter';
+            font-weight: 800;
+        }
+
+        /* FORM STYLING */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 10px;
+            color: var(--luxury-muted);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 18px 20px;
+            border: 1px solid var(--luxury-border);
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+            background: #fff;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--aura-theme);
+            box-shadow: 0 0 0 4px var(--aura-glow);
+        }
+
+        /* PAYMENT OPTIONS IMPROVED */
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .payment-option {
+            border: 2px solid #f0f0f0;
+            border-radius: 16px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1);
+            position: relative;
+            background: #fff;
+        }
+
+        .payment-option:hover {
+            border-color: var(--aura-theme);
+            background: #fffcf9;
+        }
+
+        .payment-option.active {
+            border-color: var(--aura-theme);
+            background: #fff;
+            box-shadow: 0 15px 40px var(--aura-glow);
+        }
+
+        .payment-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .payment-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .payment-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .radio-dot {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .payment-option.active .radio-dot {
+            border-color: var(--aura-theme);
+        }
+
+        .payment-option.active .radio-dot::after {
+            content: '';
+            position: absolute;
+            inset: 4px;
+            background: var(--aura-theme);
+            border-radius: 50%;
+        }
+
+        #stripe-card-element {
+            margin-top: 24px;
+            padding: 20px;
+            background: #fafafa;
+            border: 1px solid var(--luxury-border);
+            border-radius: 12px;
+            display: none;
+        }
+
+        .payment-option.active #stripe-card-element {
+            display: block;
+        }
+
+        .cod-description {
+            margin-top: 12px;
+            font-size: 13px;
+            color: var(--luxury-muted);
+            display: none;
+            line-height: 1.6;
+        }
+
+        .payment-option.active .cod-description {
+            display: block;
+        }
+
+        /* ORDER SUMMARY SIDEBAR */
+        .sidebar {
+            position: sticky;
+            top: 120px;
+        }
+
+        .sidebar-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 32px;
+            border: 1px solid var(--luxury-border);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.03);
+        }
+
+        .summary-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .summary-img {
+            width: 64px;
+            height: 80px;
+            object-fit: contain;
+            background: #fdfdfd;
+            border: 1px solid #f0f0f0;
+            border-radius: 8px;
+        }
+
+        .summary-info {
+            flex: 1;
+        }
+
+        .summary-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin: 0;
+            color: #000;
+            line-height: 1.2;
+        }
+
+        .summary-qty {
+            font-size: 12px;
+            color: var(--luxury-muted);
+            margin-top: 4px;
+        }
+
+        .summary-price {
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .total-row {
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 2px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .total-label {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.5;
+        }
+
+        .total-value {
+            font-size: 32px;
+            font-weight: 900;
+            font-family: 'Inter';
+            letter-spacing: -0.02em;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: #000;
+            color: white;
+            padding: 24px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-top: 32px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background: var(--aura-theme);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px var(--aura-glow);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 1100px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+                margin-top: 100px;
+            }
+
+            .sidebar {
+                order: -1;
+                position: static;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="relative w-full flex flex-col overflow-hidden text-white" style="background: var(--aura-grad);">
+        <!-- Navigation -->
+        <nav class="relative z-50 flex items-center justify-between px-6 py-8 md:px-12">
+            <div class="flex items-center gap-2">
+                <a href="index.html" class="flex items-center gap-2">
+                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                        <div class="w-6 h-2 bg-black rounded-full transform -rotate-45"></div>
+                    </div>
+                    <span class="text-2xl font-bold tracking-tighter uppercase italic text-white">Aura</span>
+                </a>
+            </div>
+
+            <div class="hidden md:flex items-center gap-8 glass px-8 py-3 rounded-full">
+                <a href="index.html" class="text-sm font-medium hover:opacity-70 transition-opacity">Home</a>
+                <a href="shop.html" class="text-sm font-medium hover:opacity-70 transition-opacity">Shop</a>
+                <a href="wishlist.html" class="text-sm font-medium hover:opacity-70 transition-opacity">Wishlist</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button class="p-2 hover:bg-white/10 rounded-full transition-colors" data-commerce="customer-login">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </button>
+
+                <div data-commerce="auth-only" style="display: none; align-items: center; gap: 8px;">
+                    <a href="account.html" class="p-2 hover:bg-white/10 rounded-full transition-colors text-white">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </a>
+                    <button class="p-2 hover:bg-white/10 rounded-full transition-colors text-red-300"
+                        data-commerce="customer-logout" title="Logout">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Sub-Hero Content (Integrated into Header for exact sync) -->
+        <div class="cart-hero-content py-20 px-6 text-center relative z-10">
+            <span class="text-sm font-bold tracking-[0.4em] uppercase opacity-80 mb-4 block">Complete Your
+                Purchase</span>
+            <h1 class="text-6xl md:text-8xl font-serif italic mb-0">Checkout</h1>
+        </div>
+    </div>
+
+    <main class="checkout-container">
+        <!-- LEFT: CUSTOMER INFO -->
+        <div class="content-card" data-checkout-form="true">
+            <h2 class="section-title"><span>1</span> Contact Details</h2>
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-input" data-field="checkout-email" placeholder="Enter your email"
+                    required>
+            </div>
+
+            <div class="space-y-4 mb-10">
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" id="create-acc" data-field="checkout-create-account"
+                        class="w-5 h-5 accent-[var(--aura-theme)] cursor-pointer">
+                    <label for="create-acc"
+                        class="text-sm font-semibold opacity-70 cursor-pointer hover:opacity-100 transition-opacity">Create
+                        an account for faster checkout</label>
+                </div>
+
+                <!-- Hidden Password Field -->
+                <div id="password-field-container" style="display: none;" class="animate-pulse">
+                    <label class="form-label">Set Account Password</label>
+                    <input type="password" class="form-input" data-field="checkout-password"
+                        placeholder="Create a secure password">
+                </div>
+            </div>
+
+            <h2 class="section-title"><span>2</span> Delivery Information</h2>
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-input" data-field="checkout-name" placeholder="First and last name"
+                    required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Shipping Address</label>
+                <input type="text" class="form-input" data-field="checkout-address"
+                    placeholder="Street address and apartment" required>
+            </div>
+            <div class="grid grid-cols-2 gap-5">
+                <div class="form-group">
+                    <label class="form-label">City</label>
+                    <input type="text" class="form-input" data-field="checkout-city" placeholder="e.g. New York"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Country</label>
+                    <input type="text" class="form-input" value="Worldwide Shipping" disabled
+                        style="opacity: 0.5; cursor: not-allowed;">
+                </div>
+            </div>
+
+            <h2 class="section-title"><span>3</span> Payment Excellence</h2>
+            <div class="payment-methods" data-commerce="payment-methods">
+                <div class="opacity-20 text-center py-12">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-black mx-auto mb-4"></div>
+                    Preparing secure payment...
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: SIDEBAR SUMMARY -->
+        <aside class="sidebar">
+            <div class="sidebar-card">
+                <h3 class="font-serif italic text-2xl mb-8">Order Summary</h3>
+
+                <div id="checkout-items-list" class="space-y-2 mb-10 max-h-[500px] overflow-auto pr-2 custom-scrollbar">
+                    <div class="opacity-20 text-center py-12">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-black mx-auto mb-4"></div>
+                        Syncing bag...
+                    </div>
+                </div>
+
+                <!-- Coupon Section -->
+                <div class="mt-8 mb-6">
+                    <div id="wfc-coupon-row" class="flex gap-2">
+                        <input type="text" id="wfc-coupon-input" placeholder="Coupon Code"
+                            class="flex-1 bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-xs font-bold uppercase tracking-wider outline-none focus:border-[var(--aura-theme)] transition-colors">
+                        <button id="wfc-coupon-btn" onclick="window.__commerceEngine.applyCoupon()"
+                            class="bg-black text-white px-6 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-[var(--aura-theme)] transition-all">
+                            Apply
+                        </button>
+                    </div>
+                    <div id="wfc-coupon-applied" class="hidden mt-2">
+                        <!-- Will be populated by engine -->
+                    </div>
+                </div>
+
+                <div class="space-y-4 pt-8 border-t border-gray-100 mb-8">
+                    <div class="flex justify-between text-sm">
+                        <span class="opacity-50">Subtotal</span>
+                        <span id="summary-subtotal" class="font-bold">$0.00</span>
+                    </div>
+                    <div id="wfc-discount-row" class="hidden justify-between text-sm">
+                        <span class="opacity-50">Boutique Savings</span>
+                        <span id="wfc-discount-amount" class="text-[var(--aura-theme)] font-bold">-$0.00</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="opacity-50">Global Delivery</span>
+                        <span
+                            class="text-[#2fb15c] font-bold uppercase tracking-widest text-[10px]">Complimentary</span>
+                    </div>
+                </div>
+
+                <div class="total-row">
+                    <span class="total-label">Total</span>
+                    <span id="summary-total" class="total-value">$0.00</span>
+                </div>
+
+                <button class="submit-btn" data-commerce="checkout-submit" disabled>
+                    Complete Purchase
+                </button>
+
+                <div
+                    class="mt-8 pt-8 border-t border-gray-50 flex items-center justify-center gap-4 opacity-30 text-[9px] font-bold tracking-[0.2em] uppercase">
+                    <span>Stripe Verified</span>
+                    <div class="w-1 h-1 bg-gray-400 rounded-full"></div>
+                    <span>Global Express</span>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Hidden Sidebar for sync -->
+    <div data-commerce="cart-sidebar" style="display: none;"></div>
+
+
+    <script>
+        function updatePaymentUI(method) {
+            document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('active'));
+            document.getElementById(method + '-label').classList.add('active');
+        }
+
+        // Toggle Account Password
+        document.getElementById('create-acc').addEventListener('change', function (e) {
+            const container = document.getElementById('password-field-container');
+            container.style.display = e.target.checked ? 'block' : 'none';
+        });
+
+        // EXTREMELY SIMPLE SYNC
+        console.log("[Aura Checkout] v3 Ready");
+
+        function syncBag() {
+            try {
+                if (!window.__commerceEngine) {
+                    console.log("[Aura Checkout] Engine not ready yet...");
+                    return;
+                }
+
+                if (typeof window.__commerceEngine.getCart !== 'function') {
+                    console.error("[Aura Checkout] CRITICAL: getCart is not a function!", window.__commerceEngine);
+                    return;
+                }
+
+                const cart = window.__commerceEngine.getCart();
+                console.log("[Aura Checkout] Syncing bag data:", cart);
+
+                const list = document.getElementById('checkout-items-list');
+                if (!list) return;
+
+                if (!cart || !cart.items || cart.items.length === 0) {
+                    console.log("[Aura Checkout] Bag is empty");
+                    list.innerHTML = `
+                        <div class="text-center py-12 opacity-40">
+                            <p class="font-serif italic text-xl mb-2">Heritage Empty</p>
+                            <p class="text-xs">Your bag is empty. <a href="shop.html" class="underline">Go shopping</a></p>
+                        </div>`;
+                    const submitBtn = document.querySelector('[data-commerce="checkout-submit"]');
+                    if (submitBtn) submitBtn.disabled = true;
+                    return;
+                }
+
+                const symbol = window.__commerceEngine.config.currencySymbol || '$';
+                list.innerHTML = cart.items.map(item => `
+                    <div class="summary-item">
+                        <img src="${window.__commerceEngine.getImageUrl(item.imageUrl)}" class="summary-img">
+                        <div class="summary-info">
+                            <p class="summary-title">${item.title}</p>
+                            <p class="summary-qty">${item.quantity} × ${symbol}${item.price.toFixed(2)}</p>
+                        </div>
+                        <div class="summary-price">${symbol}${(item.price * item.quantity).toFixed(2)}</div>
+                    </div>`).join('');
+
+                const subtotal = cart.items.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+
+                // Handle Coupon/Discount
+                const coupon = window.__commerceEngine.getAppliedCoupon ? window.__commerceEngine.getAppliedCoupon() : null;
+                const discount = (coupon && coupon.valid) ? (coupon.discountAmount || 0) : 0;
+                const total = Math.max(0, subtotal - discount);
+
+                const subEl = document.getElementById('summary-subtotal');
+                const totalEl = document.getElementById('summary-total');
+                const discountEl = document.getElementById('wfc-discount-amount');
+                const discountRow = document.getElementById('wfc-discount-row');
+
+                if (subEl) subEl.innerText = symbol + subtotal.toFixed(2);
+                if (totalEl) totalEl.innerText = symbol + total.toFixed(2);
+                if (discountEl) discountEl.innerText = `- ${symbol}${discount.toFixed(2)}`;
+
+                // Update Coupon UI if needed
+                const couponRow = document.getElementById('wfc-coupon-row');
+                const appliedEl = document.getElementById('wfc-coupon-applied');
+
+                if (coupon && coupon.valid) {
+                    if (discountRow) discountRow.style.display = 'flex';
+                    if (couponRow) couponRow.style.display = 'none';
+                    if (appliedEl) {
+                        appliedEl.innerHTML = `<span class="bg-[var(--aura-theme)]/10 text-[var(--aura-theme)] px-4 py-2 rounded-lg text-xs font-bold flex items-center justify-between">
+                            ${coupon.code} 
+                            <button onclick="window.__commerceEngine.removeCoupon()" class="ml-2 hover:opacity-50">&times;</button>
+                        </span>`;
+                        appliedEl.style.display = 'block';
+                    }
+                } else {
+                    if (discountRow) discountRow.style.display = 'none';
+                    if (couponRow) couponRow.style.display = 'flex';
+                    if (appliedEl) appliedEl.style.display = 'none';
+                }
+
+                const submitBtn = document.querySelector('[data-commerce="checkout-submit"]');
+                if (submitBtn) submitBtn.disabled = false;
+
+                console.log("[Aura Checkout] Bag synced successfully");
+            } catch (err) {
+                console.error("[Aura Checkout] syncBag error:", err);
+            }
+        }
+
+        // Fast Poll
+        let syncInterval = setInterval(() => {
+            if (window.__commerceEngine && typeof window.__commerceEngine.getCart === 'function') {
+                syncBag();
+                // If we found items or tried 5 times with engine, keep listening
+                document.addEventListener('ce-cart-updated', syncBag);
+                
+                // Init dynamic payments
+                const pmContainer = document.querySelector('[data-commerce="payment-methods"]');
+                if (pmContainer && window.__commerceEngine.renderPaymentGateways) {
+                     window.__commerceEngine.renderPaymentGateways(pmContainer);
+                }
+
+                // Pre-fill user
+                const user = window.__commerceEngine.getCustomer ? window.__commerceEngine.getCustomer() : null;
+                if (user) {
+                    const emailF = document.querySelector('[data-field="checkout-email"]');
+                    const nameF = document.querySelector('[data-field="checkout-name"]');
+                    if (emailF) emailF.value = user.email || '';
+                    if (nameF) nameF.value = user.name || '';
+                }
+
+                clearInterval(syncInterval);
+            }
+        }, 500);
+
+        // Backup Listeners
+        window.addEventListener('load', syncBag);
+        document.addEventListener('DOMContentLoaded', syncBag);
+    </script>
+</body>
+
+</html>

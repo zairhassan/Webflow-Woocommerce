@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDK Test | Unified Product Page</title>
+    <!-- Premium Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --aura-theme: #F27D26; }
+        body { margin: 0; padding: 0; background: #fff; }
+        .nav { padding: 20px 5%; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 900; }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="logo">Aura Boutique</div>
+        <div data-commerce="cart-toggle" style="cursor:pointer; font-weight:800; font-size:12px; letter-spacing:0.1em;">
+            CART (<span data-commerce="cart-count">0</span>)
+        </div>
+    </nav>
+
+    <!-- 
+        ONE-LINE DEPLOYMENT:
+        Just add data-commerce="product-page" and a product-id or product-slug.
+    -->
+    <div data-commerce="product-page" data-product-slug="apple-airpods-pro">
+        <!-- The SDK will inject the entire premium layout here -->
+        <div style="padding:100px; text-align:center; font-family:Inter, sans-serif; color:#999;">
+            Initializing Premium Product Experience...
+        </div>
+    </div>
+
+    <!-- SDK Script -->
+    <script id="ce-engine-script" 
+            src="../sdk/engine_v5_final.js" 
+            data-store-key="pk_live_6bf90196f1ba428e8f1ff44fa3d506df"
+            data-api-url="http://127.0.0.1:5001">
+    </script>
+
+</body>
+</html>

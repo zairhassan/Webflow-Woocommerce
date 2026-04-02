@@ -1,0 +1,2696 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura — Premium Outerwear</title>
+    <link rel="stylesheet" href="style.css">
+    <script id="ce-engine-script" src="../sdk/engine_v5_final.js?v=50" data-api-url="http://127.0.0.1:5001"
+        data-store-key="pk_live_6bf90196f1ba428e8f1ff44fa3d506df"></script>
+
+    <style>
+        /* Specific hero animation utility classes */
+        :root {
+            --aura-theme: #F27D26;
+            --aura-glow: rgba(242, 125, 38, 0.15);
+            --aura-bg: #0a0a0a;
+        }
+
+        .bg-transition {
+            transition: background 1s ease-in-out, background-color 1.5s ease;
+        }
+
+        .logo-pulse {
+            animation: pulse-logo 3s infinite alternate;
+        }
+
+        @keyframes pulse-logo {
+            0% {
+                opacity: 0.1;
+            }
+
+            100% {
+                opacity: 0.2;
+            }
+        }
+
+        /* Initial hidden states for entry animations */
+        .slide-in-left {
+            transform: translateX(-50px);
+            opacity: 0;
+        }
+
+        .slide-in-right {
+            transform: translateX(50px);
+            opacity: 0;
+        }
+
+        .slide-in-up {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        /* PREMIUM UI POLISH: Wishlist & Qty */
+        .hero-wishlist-btn,
+        .hero-wishlist-btn-sidebar,
+        .hero-wishlist-btn-left {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background: none !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            color: white !important;
+            width: 44px !important;
+            height: 44px !important;
+            border-radius: 99px !important;
+            padding: 0 !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .hero-wishlist-btn-left {
+            width: 32px !important;
+            height: 32px !important;
+            border: none !important;
+        }
+
+        .hero-wishlist-btn:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border-color: rgba(255, 255, 255, 0.4) !important;
+        }
+
+        .hero-wishlist-btn.wfc-wishlisted,
+        [data-commerce="wishlist-toggle"].wfc-wishlisted {
+            color: #ff4757 !important;
+            border-color: #ff4757 !important;
+            background: rgba(255, 71, 87, 0.1) !important;
+        }
+
+        .qty-input-field {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            border-radius: 12px !important;
+            height: 42px !important;
+            width: 48px !important;
+            color: white !important;
+            font-size: 16px !important;
+            font-weight: 700 !important;
+            transition: all 0.3s ease !important;
+            text-align: center !important;
+            outline: none !important;
+        }
+
+        /* Hide spin buttons */
+        .qty-input-field::-webkit-inner-spin-button,
+        .qty-input-field::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* OVERRIDING GLOBAL WISHLIST CSS FOR HERO BUTTON */
+        #hero-wishlist-btn[data-commerce="wishlist-toggle"] {
+            position: relative !important;
+            top: auto !important;
+            left: auto !important;
+            width: 100% !important;
+            height: auto !important;
+            border-radius: 9999px !important;
+            /* Tailwind rounded-full */
+            background: transparent !important;
+            backdrop-filter: none !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            opacity: 1 !important;
+            transform: none !important;
+            display: flex !important;
+            color: white !important;
+            padding: 1rem !important;
+            /* py-4 equivalent */
+            gap: 0.75rem !important;
+            /* gap-3 equivalent */
+        }
+
+        #hero-wishlist-btn[data-commerce="wishlist-toggle"]:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+            color: white !important;
+            transform: none !important;
+        }
+
+        #hero-wishlist-btn[data-commerce="wishlist-toggle"].wfc-wishlisted {
+            color: white !important;
+            background: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        #hero-wishlist-btn[data-commerce="wishlist-toggle"].wfc-wishlisted svg path {
+            fill: #ff3b30 !important;
+            stroke: #ff3b30 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-[#fbfbfb] text-[#1a1a1a] overflow-x-hidden min-h-screen">
+
+    <!-- HERO SECTION WRAPPER -->
+    <div class="relative w-full min-h-screen flex flex-col overflow-hidden text-white pb-12">
+        <!-- Dynamic Background Gradient -->
+        <div id="dynamic-bg" class="absolute inset-0 z-0 bg-transition" style="background: var(--aura-grad);"></div>
+
+        <!-- Global Header -->
+        <div id="header-placeholder"></div>
+
+        <!-- Main Content wrapped in a scope to pull data -->
+        <!-- Using aura-puffer-jacket as the slug based on our seed data -->
+        <main
+            class="relative z-10 grid grid-cols-1 lg:grid-cols-12 min-h-screen px-6 md:px-12 items-center pt-64 pb-32 max-w-[1800px] mx-auto"
+            data-commerce="product-detail" data-product-slug="aura-puffer-jacket">
+
+            <!-- Left Content: Product Info -->
+            <div class="lg:col-span-4 space-y-8 pt-12 lg:pt-0"
+                style="display: flex; flex-direction: column; gap: 2rem;">
+                <div id="anim-title" class="slide-in-left" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <h2 class="text-xl md:text-2xl font-light tracking-wide opacity-90" data-field="category">Premium
+                        Outerwear</h2>
+                    <h1 class="text-6xl md:text-8xl font-serif italic leading-none" data-field="title">Aura Puffer</h1>
+                </div>
+
+                <div id="anim-desc" class="max-w-md slide-in-left"
+                    style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <p class="text-sm md:text-base leading-relaxed opacity-80 font-light" data-field="description">
+                        Experience the warmth and softness in every wear. Our cozy outerwear is designed for everyday
+                        comfort.
+                    </p>
+
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-1 text-yellow-400">
+                            ★★★★★
+                        </div>
+                        <span class="text-xs font-medium opacity-60">(4.8 / 5.0)</span>
+                    </div>
+                </div>
+
+                <!-- Action buttons removed from here as per user request (moved to sidebar/rating) -->
+            </div>
+
+            <!-- Center Content: 3D Product Image -->
+            <div
+                class="lg:col-span-5 flex justify-center items-center py-12 lg:py-0 relative overflow-hidden h-full min-h-[400px]">
+
+                <div id="product-img-container"
+                    class="relative w-full max-w-[500px] aspect-square flex items-center justify-center">
+                    <!-- Glow Effect behind image -->
+                    <div id="image-glow" class="absolute inset-0 opacity-40 rounded-full transition-colors"
+                        style="filter: blur(100px); background-color: #F27D26; transition-duration: 700ms;"></div>
+
+                    <!-- Jacket Image & Hover Overlay -->
+                    <div id="product-img-wrapper"
+                        class="relative z-10 w-full h-full group/img cursor-pointer cursor-crosshair">
+                        <img id="main-product-image" src="" alt="Jacket"
+                            class="w-full h-full object-contain img-drop-shadow transition-transform duration-700 group-hover/img:scale-105"
+                            data-field="image">
+
+                        <!-- Hover View Product Button -->
+                        <style>
+                            #product-img-wrapper:hover #view-product-overlay {
+                                opacity: 1;
+                                pointer-events: auto;
+                            }
+
+                            #product-img-wrapper:hover #view-product-btn {
+                                transform: translate(-50%, 0) scale(1);
+                            }
+
+                            #view-product-overlay {
+                                opacity: 0;
+                                pointer-events: none;
+                                transition: opacity 0.3s ease;
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                width: 100%;
+                                height: 100%;
+                                z-index: 50;
+                            }
+
+                            #view-product-btn {
+                                position: absolute;
+                                bottom: 25%;
+                                left: 50%;
+                                transform: translate(-50%, 0) scale(0.8);
+                                transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+                            }
+                        </style>
+                        <div id="view-product-overlay">
+                            <a href="product.html?slug=aura-puffer-jacket" id="view-product-btn"
+                                class="glass px-8 py-4 rounded-full font-bold uppercase tracking-widest text-sm flex items-center gap-3 hover:bg-white/20">
+                                View Product
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="12 5 19 12 12 19"></polyline>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Price Tag Widget: Restored to original position -->
+                    <div id="anim-price" class="absolute z-50 slide-in-right glass shadow-2xl"
+                    style="top: 12%; right: 15%; padding: 2rem; border-radius: 24px; display: flex; flex-direction: column; gap: 0.5rem; width: max-content; transition-duration: 700ms;">
+                        <div class="text-[11px] uppercase tracking-[0.2em] opacity-60 font-bold">
+                            Price
+                        </div>
+                        <div class="text-3xl font-bold tracking-tighter" data-field="price">$0.00</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Content: Widgets & Selectors -->
+            <div class="lg:col-span-3 flex flex-col items-end gap-8 pb-12 lg:pb-0">
+
+                <!-- Color Selector Widget -->
+                <div class="glass p-6 rounded-[32px] w-full max-w-[200px]"
+                    style="border-radius: 32px; display: flex; flex-direction: column; gap: 1.5rem;">
+                    <div class="text-xs font-bold uppercase tracking-widest opacity-60">Select Color</div>
+
+                    <!-- We use standard select logic behind the scenes, SDK injects buttons here using data-commerce="variant-selector" -->
+                    <!-- We must ensure the HTML renderer in engine.js creates buttons with our class. We can't guarantee engine.js structure here so we supply basic styles in CSS that target ce-variant-buttons. -->
+                    <div data-commerce="variant-selector" data-attribute="Color"
+                        style="display: flex; flex-direction: column; gap: 1rem;"></div>
+                </div>
+
+                <!-- Size Selector Widget -->
+                <div class="glass p-6 rounded-[32px] w-full max-w-[200px]"
+                    style="border-radius: 32px; display: flex; flex-direction: column; gap: 1rem;">
+                    <div class="text-xs font-bold uppercase tracking-widest opacity-60">Size</div>
+                    <div data-commerce="variant-selector" data-attribute="Size"></div>
+                </div>
+
+                <!-- Quantity Selector -->
+                <div class="glass p-6 rounded-[32px] w-full max-w-[200px]"
+                    style="border-radius: 32px; display: flex; flex-direction: column; gap: 1rem;">
+                    <div class="text-xs font-bold uppercase tracking-widest opacity-60">Quantity</div>
+                    <div class="flex items-center justify-between gap-4">
+                        <button onclick="decrementQty()"
+                            class="w-10 h-10 flex items-center justify-center border border-white/20 rounded-full hover:bg-white/10 transition-colors">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </button>
+                        <input type="number" id="hero-qty" value="1" min="1" data-commerce="quantity-input"
+                            class="qty-input-field" readonly>
+                        <button onclick="incrementQty()"
+                            class="w-10 h-10 flex items-center justify-center border border-white/20 rounded-full hover:bg-white/10 transition-colors">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Actions Widget (Add to Cart + Wishlist) -->
+                <div class="glass p-6 rounded-[32px] w-full max-w-[200px]"
+                    style="border-radius: 32px; display: flex; flex-direction: column; gap: 1.5rem;">
+                    <button
+                        class="add-cart-btn relative flex items-center justify-center gap-3 w-full py-4 rounded-full font-bold overflow-hidden transition-all"
+                        data-commerce="add-to-cart" data-qty-id="hero-qty" data-product-id="aura-puffer-jacket"
+                        style="background: var(--aura-theme); color: white !important; transition: background 0.5s ease;">
+                        <span class="relative z-10">Add to Cart</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"
+                            class="relative z-10">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <path d="M16 10a4 4 0 0 1-8 0"></path>
+                        </svg>
+                    </button>
+
+                    <button id="hero-wishlist-btn"
+                        class="relative flex items-center justify-center gap-3 w-full py-4 rounded-full font-bold overflow-hidden transition-all hover:bg-white/10"
+                        data-commerce="wishlist-toggle" data-product-id="aura-puffer-jacket"
+                        style="border: 1px solid var(--aura-theme); transition: border-color 0.5s ease;">
+                        <span class="relative z-10">Wishlist</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" class="relative z-10">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                            </path>
+                        </svg>
+                    </button>
+
+                </div>
+            </div>
+        </main>
+    </div> <!-- END HERO WRAPPER -->
+
+    <!-- PREMIUM TRUST & VALUE SECTION -->
+    <!-- PREMIUM TRUST & VALUE SECTION (Floating Glass Bar) -->
+    <!-- PREMIUM TRUST & VALUE SECTION (Floating Glass Bar) -->
+    <style>
+        .trust-section {
+            position: relative;
+            z-index: 40;
+            width: 100%;
+            padding: 0 40px 60px 40px;
+            margin-top: -80px;
+            /* Pull it up into the hero background */
+        }
+
+        .trust-glass-bar {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 40px;
+            padding: 40px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.5s ease;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+        }
+
+        .trust-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 16px;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .trust-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: rgba(242, 125, 38, 0.1);
+            border: 1px solid rgba(242, 125, 38, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--aura-theme);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .trust-item:hover .trust-icon-wrapper {
+            transform: scale(1.1) translateY(-5px);
+            background: var(--aura-theme);
+            color: #fff;
+            box-shadow: 0 10px 30px var(--aura-glow);
+        }
+
+        .trust-icon-wrapper svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .trust-title {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: #1a1a1a;
+        }
+
+        .trust-text {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #666;
+            font-weight: 400;
+            max-width: 200px;
+        }
+
+        .trust-v-divider {
+            width: 1px;
+            height: 60px;
+            background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.05), transparent);
+        }
+
+        @media (max-width: 900px) {
+            .trust-glass-bar {
+                flex-direction: column;
+                padding: 60px 30px;
+                border-radius: 32px;
+                gap: 50px;
+                margin-top: 0;
+            }
+
+            .trust-v-divider {
+                width: 60px;
+                height: 1px;
+                background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
+            }
+
+            .trust-section {
+                padding-bottom: 100px;
+                background: #fbfbfb;
+            }
+        }
+    </style>
+
+    <section class="trust-section">
+        <div class="trust-glass-bar">
+            <!-- Global Access -->
+            <div class="trust-item">
+                <div class="trust-icon-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path
+                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                        </path>
+                    </svg>
+                </div>
+                <div>
+                    <h4 class="trust-title">Global Access</h4>
+                    <p class="trust-text">Complimentary expedited shipping on all international orders.</p>
+                </div>
+            </div>
+
+            <div class="trust-v-divider"></div>
+
+            <!-- Secure Checkout -->
+            <div class="trust-item">
+                <div class="trust-icon-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h4 class="trust-title">Secure Payments</h4>
+                    <p class="trust-text">256-bit SSL encrypted checkout for your security.</p>
+                </div>
+            </div>
+
+            <div class="trust-v-divider"></div>
+
+            <!-- Concierge Service -->
+            <div class="trust-item">
+                <div class="trust-icon-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </div>
+                <div>
+                    <h4 class="trust-title">24/7 Support</h4>
+                    <p class="trust-text">Dedicated concierge for our exclusive global clientele.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURED COLLECTIONS SECTION (Bento Grid) -->
+    <style>
+        .collections-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 120px 40px;
+        }
+
+        .section-header {
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.4em;
+            color: var(--aura-theme);
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(32px, 5vw, 48px);
+            color: #1a1a1a;
+            font-weight: 700;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: repeat(2, 300px);
+            gap: 24px;
+        }
+
+        .bento-item {
+            position: relative;
+            border-radius: 32px;
+            overflow: hidden;
+            background: #eee;
+            cursor: pointer;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .bento-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .bento-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .bento-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 60%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 40px;
+            color: white;
+            transition: all 0.4s ease;
+        }
+
+        .bento-item:hover .bento-overlay {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+        }
+
+        .bento-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            transform: translateY(0);
+            transition: transform 0.4s ease;
+        }
+
+        .bento-link {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            opacity: 0.7;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bento-link svg {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .bento-item:hover .bento-link svg {
+            transform: translateX(5px);
+        }
+
+        /* Bento Layout Spans */
+        .item-large {
+            grid-column: span 8;
+            grid-row: span 2;
+        }
+
+        .item-tall {
+            grid-column: span 4;
+            grid-row: span 1;
+        }
+
+        .item-small {
+            grid-column: span 4;
+            grid-row: span 1;
+        }
+
+        @media (max-width: 1024px) {
+            .bento-grid {
+                grid-template-rows: repeat(3, 400px);
+            }
+
+            .item-large {
+                grid-column: span 12;
+                grid-row: span 1;
+            }
+
+            .item-tall {
+                grid-column: span 6;
+                grid-row: span 1;
+            }
+
+            .item-small {
+                grid-column: span 6;
+                grid-row: span 1;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .bento-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .bento-item {
+                min-height: 350px;
+            }
+        }
+    </style>
+
+    <section class="collections-section">
+        <div class="section-header flex justify-between items-end mb-12">
+            <div class="text-left">
+                <span class="section-subtitle">The Aura Vault</span>
+                <h2 class="section-title">Featured Collections</h2>
+            </div>
+            <a href="shop.html" class="group flex items-center gap-2 text-sm font-bold uppercase tracking-widest hover:text-aura-theme transition-colors pb-2">
+                Shop All Collections
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="group-hover:translate-x-1 transition-transform">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </a>
+        </div>
+
+        <div class="bento-grid">
+            <!-- Large Item: Outerwear -->
+            <div class="bento-item item-large group/bento cursor-pointer" onclick="window.location.href='outerwear.html'">
+                <img src="assets/collection_outerwear_1772654546100.png" alt="Outerwear">
+                <div class="bento-overlay">
+                    <h3 class="bento-title">The Puffer Series</h3>
+                    <div class="bento-link">
+                        Explore Collection
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tall Item: Accessories -->
+            <div class="bento-item item-tall group/bento cursor-pointer" onclick="window.location.href='accessories.html'">
+                <img src="assets/collection_accessories_1772654559650.png" alt="Accessories">
+                <div class="bento-overlay">
+                    <h3 class="bento-title">Refined Gear</h3>
+                    <div class="bento-link">
+                        Shop Accessories
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Small Item: Essentials -->
+            <div class="bento-item item-small group/bento cursor-pointer" onclick="window.location.href='essentials.html'">
+                <img src="assets/collection_essentials_1772654573869.png" alt="Essentials">
+                <div class="bento-overlay">
+                    <h3 class="bento-title">Modern Essentials</h3>
+                    <div class="bento-link">
+                        View All
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- CURATED ARRIVALS SECTION (Featured Products) -->
+    <style>
+        .arrivals-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 40px 120px 40px;
+        }
+
+        .arrivals-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .product-card {
+            position: relative;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+
+        .card-image-wrap {
+            position: relative;
+            aspect-ratio: 4/5;
+            overflow: hidden;
+            background: #f8f8f8;
+            margin-bottom: 0; /* Remove any child-induced gaps */
+            display: flex;
+            align-items: flex-end; /* Align quick-add to bottom of image */
+        }
+
+        .card-image-wrap img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .product-card:hover .card-image-wrap img {
+            transform: scale(1.05);
+        }
+
+        .quick-add-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            opacity: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: black;
+            padding: 14px 28px;
+            border-radius: 99px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            white-space: nowrap;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 10;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .product-card:hover .quick-add-btn {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .quick-add-btn:hover {
+            background: var(--aura-theme);
+            color: white;
+            transform: translateX(-50%) translateY(-2px) scale(1.03);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-info {
+            padding: 24px;
+            text-align: center;
+        }
+
+        .card-tag {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--aura-theme);
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .card-price {
+            font-size: 15px;
+            font-weight: 600;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .price-old {
+            text-decoration: line-through;
+            opacity: 0.4;
+            font-size: 13px;
+        }
+
+        @media (max-width: 1100px) {
+            .arrivals-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .arrivals-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .arrivals-section {
+                padding-top: 100px;
+            }
+        }
+
+        /* Enhanced Card Elements: Wishlist Position */
+        .product-card [data-commerce="wishlist-toggle"] {
+            position: absolute !important;
+            top: 15px !important;
+            left: 15px !important;
+            width: 44px !important;
+            height: 44px !important;
+            border-radius: 50% !important;
+            background: rgba(255, 255, 255, 0.9) !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.4) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            z-index: 20 !important;
+            opacity: 1 !important;
+            transform: scale(1) !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            color: #1a1a1a !important;
+            padding: 0 !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+        }
+
+        .product-card:hover [data-commerce="wishlist-toggle"] {
+            opacity: 1 !important;
+            transform: scale(1) !important;
+        }
+
+        [data-commerce="wishlist-toggle"]:hover {
+            background: #fff !important;
+            transform: scale(1.1) !important;
+            color: #ff3b30 !important;
+            box-shadow: 0 8px 25px rgba(255, 59, 48, 0.2) !important;
+        }
+
+        [data-commerce="wishlist-toggle"].wfc-wishlisted {
+            color: #ff3b30 !important;
+            background: #fff !important;
+            opacity: 1 !important;
+            transform: scale(1) !important;
+        }
+
+        [data-commerce="wishlist-toggle"].wfc-wishlisted svg path {
+            fill: currentColor !important;
+        }
+
+        /* Premium Badge Styling */
+        .card-badge-wrap {
+            position: absolute !important;
+            top: 15px !important;
+            right: 0 !important;
+            left: auto !important;
+            z-index: 10 !important;
+            pointer-events: none !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: flex-end !important;
+        }
+
+        .wfc-badge-featured {
+            background: rgba(26, 26, 26, 0.9) !important;
+            backdrop-filter: blur(8px);
+            color: #fff !important;
+            padding: 6px 16px !important;
+            font-size: 10px !important;
+            text-transform: uppercase !important;
+            letter-spacing: 2px !important;
+            font-weight: 800 !important;
+            border-radius: 4px 0 0 4px !important;
+            box-shadow: -5px 5px 15px rgba(0, 0, 0, 0.15);
+            border-left: 2px solid var(--aura-theme);
+        }
+
+        .product-card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .card-title-link {
+            text-decoration: none;
+            color: inherit;
+            transition: opacity 0.3s;
+        }
+
+        .card-title-link:hover {
+            opacity: 0.7;
+        }
+
+        /* Trending Section - Sticky Scroll Stack */
+        .trending-section {
+            height: 300vh;
+            position: relative;
+            background: var(--aura-bg);
+            color: white;
+            margin-top: 100px;
+            transition: background-color 1.5s ease;
+        }
+
+        .trending-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 10%;
+            overflow: hidden;
+        }
+
+        .trending-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            width: 100%;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .trending-content {
+            z-index: 10;
+        }
+
+        .trending-subtitle {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--aura-theme);
+            margin-bottom: 20px;
+            display: block;
+            opacity: 0.8;
+            transition: color 1.5s ease;
+        }
+
+        .trending-title-main {
+            font-size: clamp(48px, 8vw, 84px);
+            font-weight: 900;
+            line-height: 0.9;
+            margin-bottom: 30px;
+            letter-spacing: -2px;
+            color: #ffffff;
+            transition: color 1.5s ease;
+        }
+
+        .trending-desc {
+            font-size: 18px;
+            color: #ffffff;
+            max-width: 450px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .trending-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 30px;
+            letter-spacing: -0.5px;
+        }
+
+        .trending-visual-container {
+            position: relative;
+            height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .trending-item {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transform: translateY(100px) scale(0.9);
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .trending-item.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        .trending-item.past {
+            opacity: 0 !important;
+            transform: translateY(-100px) scale(0.95) !important;
+        }
+        .trending-img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            filter: drop-shadow(0 20px 50px rgba(0, 0, 0, 0.5));
+            border-radius: 24px;
+        }
+
+        /* Hover Overlay for Trending Items - Matched to Image Size */
+        .trending-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Centered overlay */
+            width: 90%; /* Matches max-width of img */
+            height: 90%; /* Matches max-height of img */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 10;
+        }
+
+        .trending-item.active:hover .trending-overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .trending-hover-btn {
+            background: white;
+            color: black;
+            padding: 16px 32px;
+            border-radius: 99px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            border: none;
+            cursor: pointer;
+        }
+
+        .trending-hover-btn:hover {
+            transform: scale(1.05);
+            background: #f8f8f8;
+        }
+
+        .trending-wishlist-btn {
+            position: absolute !important;
+            top: 12% !important;
+            right: 12% !important;
+            width: 44px !important;
+            height: 44px !important;
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+            color: #1a1a1a !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            border: 1px solid rgba(255, 255, 255, 0.4) !important;
+            cursor: pointer !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+            padding: 0 !important;
+            z-index: 30 !important;
+            opacity: 1 !important;
+            transform: scale(1) !important;
+            margin: 0 !important;
+        }
+
+        .trending-item.active .trending-wishlist-btn {
+            opacity: 1 !important;
+            transform: scale(1) !important;
+        }
+
+        .trending-wishlist-btn:hover {
+            transform: scale(1.15) !important;
+            background: #f0f0f0 !important;
+        }
+
+        .trending-wishlist-btn.wfc-wishlisted {
+            background: white !important;
+            color: #ff3b30 !important;
+        }
+
+        .trending-wishlist-btn svg {
+            width: 20px !important;
+            height: 20px !important;
+        }
+
+        .trending-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 40px;
+            background: white;
+            color: black;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 99px;
+            transition: all 0.3s ease;
+        }
+
+        .trending-btn:hover {
+            transform: scale(1.05);
+            background: #eee;
+        }
+
+        @media (max-width: 1024px) {
+            .trending-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .trending-sticky {
+                flex-direction: column;
+                justify-content: center;
+                padding-top: 5vh;
+            }
+
+            .trending-visual-container {
+                height: 40vh;
+                margin-top: 40px;
+            }
+
+            .trending-desc {
+                margin: 0 auto 40px auto;
+            }
+        }
+
+        /* ===== Orbit Showcase (Curved Path) ===== */
+        .orbit-showcase {
+            height: 400vh;
+            position: relative;
+            background: #ffffff;
+        }
+
+        .orbit-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .orbit-canvas {
+            position: absolute;
+            inset: 0;
+        }
+
+        .orbit-text {
+            position: absolute;
+            top: 50%;
+            right: 10%;
+            transform: translateY(-50%);
+            z-index: 10;
+            max-width: 500px;
+            text-align: right;
+        }
+
+        .orbit-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: #999;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .orbit-heading {
+            font-size: clamp(36px, 5vw, 64px);
+            font-weight: 900;
+            color: #1a1a1a;
+            line-height: 1;
+            letter-spacing: -2px;
+            margin-bottom: 16px;
+            transition: opacity 0.4s ease;
+        }
+
+        .orbit-price-tag {
+            font-size: 28px;
+            font-weight: 700;
+            color: rgba(0, 0, 0, 0.3);
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .orbit-subtext {
+            font-size: 15px;
+            color: #888;
+            line-height: 1.6;
+            margin-bottom: 32px;
+            transition: opacity 0.4s ease;
+        }
+
+        .orbit-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 36px;
+            background: #1a1a1a;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 99px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .orbit-cta:hover {
+            background: #333;
+            transform: scale(1.05);
+        }
+
+        /* Each product "floater" */
+        .orbit-product {
+            position: absolute;
+            width: 380px;
+            will-change: transform, opacity;
+        }
+
+        .orbit-product-inner {
+            text-decoration: none;
+            display: block;
+            position: relative;
+        }
+
+        .orbit-product-img {
+            width: 380px;
+            height: 475px;
+            border-radius: 24px;
+            overflow: hidden;
+            background: #f0f0f0;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+
+        .orbit-product-img img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .orbit-product:hover .orbit-product-img img {
+            transform: scale(1.05);
+        }
+
+        /* Hover overlay */
+        .orbit-hover-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(3px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            opacity: 0;
+            transition: opacity 0.35s ease;
+            border-radius: 24px;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .orbit-product-img:hover .orbit-hover-overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .orbit-hover-btn {
+            padding: 12px 28px;
+            border-radius: 99px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .orbit-view-btn {
+            background: white;
+            color: #0d0d0d;
+        }
+
+        .orbit-view-btn:hover {
+            background: #eee;
+        }
+
+        .orbit-wishlist-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .orbit-wishlist-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .orbit-product-info {
+            padding: 16px 8px;
+        }
+
+        .orbit-product-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .orbit-product-price {
+            font-size: 14px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        /* Progress bar */
+        .orbit-progress {
+            position: absolute;
+            bottom: 50px;
+            left: 10%;
+            width: 200px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 99px;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        .orbit-progress-fill {
+            height: 100%;
+            background: #ffffff;
+            border-radius: 99px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 1024px) {
+            .orbit-text {
+                right: 5%;
+                max-width: 280px;
+            }
+
+            .orbit-product {
+                width: 260px;
+            }
+
+            .orbit-product-img {
+                width: 260px;
+                height: 325px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .orbit-text {
+                top: auto;
+                bottom: 60px;
+                right: 50%;
+                transform: translateX(50%);
+                text-align: center;
+                max-width: 90%;
+            }
+
+            .orbit-product {
+                width: 200px;
+            }
+
+            .orbit-product-img {
+                width: 200px;
+                height: 250px;
+            }
+        }
+    </style>
+
+    <section class="arrivals-section">
+        <div class="section-header">
+            <span class="section-subtitle">Season 01</span>
+            <h2 class="section-title">Curated Arrivals</h2>
+        </div>
+
+        <div class="arrivals-grid" data-commerce="product-list" data-type="featured" data-limit="4">
+            <template data-commerce="product-template">
+                <div class="product-card" data-commerce="product-item" data-product-id="{{id}}">
+                    <div class="card-badge-wrap" data-field="badge"></div>
+                    <button class="wishlist-toggle-btn" data-commerce="wishlist-toggle">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.78-8.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                            </path>
+                        </svg>
+                    </button>
+                    <div class="card-image-wrap">
+                        <a href="product.html?slug={{slug}}" class="product-card-link" data-field="link">
+                            <img src="{{imageUrl}}" alt="{{title}}" loading="lazy" data-field="image">
+                        </a>
+                        <button class="quick-add-btn" data-commerce="add-to-cart">
+                            <span>Quick Add</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="card-info">
+                        <span class="card-tag">AURA PREMIUM</span>
+                        <a href="product.html?slug={{slug}}" class="card-title-link" data-field="link">
+                            <h3 class="card-title" data-field="title">{{title}}</h3>
+                        </a>
+                        <div class="card-price" data-field="price">
+                            <span class="price-current">{{currency}}{{price}}</span>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Loading Indicator (shimmers) -->
+            <div class="product-card ce-loader" style="opacity: 0.5;">
+                <div class="card-image-wrap" style="background: #eee;"></div>
+                <div class="card-info">
+                    <div style="height: 20px; background: #eee; border-radius: 4px;"></div>
+                </div>
+            </div>
+            <div class="product-card ce-loader" style="opacity: 0.5;">
+                <div class="card-image-wrap" style="background: #eee;"></div>
+                <div class="card-info">
+                    <div style="height: 20px; background: #eee; border-radius: 4px;"></div>
+                </div>
+            </div>
+            <div class="product-card ce-loader" style="opacity: 0.5;">
+                <div class="card-image-wrap" style="background: #eee;"></div>
+                <div class="card-info">
+                    <div style="height: 20px; background: #eee; border-radius: 4px;"></div>
+                </div>
+            </div>
+            <div class="product-card ce-loader" style="opacity: 0.5;">
+                <div class="card-image-wrap" style="background: #eee;"></div>
+                <div class="card-info">
+                    <div style="height: 20px; background: #eee; border-radius: 4px;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trending Section -->
+    <section class="trending-section" id="trending">
+        <div class="trending-sticky">
+            <div class="trending-grid">
+                <div class="trending-content">
+                    <span class="trending-subtitle">Trending Now</span>
+                    <h2 class="trending-title-main" id="trending-title">Elite Performance</h2>
+                    <p class="trending-desc" id="trending-desc">Experience the pinnacle of technical outerwear,
+                        engineered for the absolute minimalist.</p>
+                    <div class="trending-price" id="trending-price"></div>
+                    <a href="#" class="trending-btn" id="trending-link">
+                        <span>Shop Now</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="3">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </div>
+                <div class="trending-visual-container" id="trending-visuals">
+                    <!-- Products will be injected here by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden SDK Collector for Trending Products -->
+        <div style="display: none;" data-commerce="product-list" data-type="featured" data-limit="3"
+            data-trending-collector>
+            <template data-commerce="product-template">
+                <div class="trending-data-item" data-id="{{id}}" data-title="{{title}}" data-desc="{{description}}"
+                    data-img="{{imageUrl}}" data-price="{{currency}}{{price}}" data-link="product.html?slug={{slug}}">
+                </div>
+            </template>
+        </div>
+    </section>
+
+    <!-- Orbit Showcase (Curved Path) -->
+    <section class="orbit-showcase" id="orbit-showcase">
+        <div class="orbit-sticky">
+            <div class="orbit-canvas" id="orbit-canvas">
+                <!-- Product floaters injected by JS -->
+            </div>
+
+            <div class="orbit-text">
+                <span class="orbit-label">Trending Now</span>
+                <h2 class="orbit-heading" id="orbit-title">Loading...</h2>
+                <div class="orbit-price-tag" id="orbit-price"></div>
+                <p class="orbit-subtext" id="orbit-desc">Scroll to explore</p>
+                <button class="orbit-cta" id="orbit-atc-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <path d="M16 10a4 4 0 0 1-8 0" />
+                    </svg>
+                    <span>Add to Cart</span>
+                </button>
+            </div>
+
+            <div class="orbit-progress">
+                <div class="orbit-progress-fill" id="orbit-progress"></div>
+            </div>
+        </div>
+
+        <!-- SDK Product Data Collector (Shoes category) -->
+        <div style="display:none;" data-commerce="product-list" data-category="shoes" data-limit="3"
+            id="orbit-data-source">
+            <template data-commerce="product-template">
+                <div class="orbit-data" data-title="{{title}}"
+                    data-price="{{currency}}{{price}}" data-desc="{{description}}" data-img="{{imageUrl}}"
+                    data-link="product.html?slug={{slug}}">
+                </div>
+            </template>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- CURATED COLLECTION (SDK Powered: Featured Products) -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <style>
+        .curated-section {
+            padding: 120px 5%;
+            background: var(--aura-bg);
+            position: relative;
+            z-index: 10;
+            transition: background-color 1.5s ease;
+        }
+
+        .curated-header {
+            text-align: center;
+            margin-bottom: 70px;
+        }
+
+        .curated-label {
+            font-size: 12px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 16px;
+        }
+
+        .curated-title {
+            font-size: clamp(32px, 5vw, 56px);
+            font-weight: 800;
+            color: #fff;
+            margin: 0 0 16px;
+            letter-spacing: -1px;
+        }
+
+        .curated-subtitle {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.5);
+            max-width: 550px;
+            margin: 0 auto;
+        }
+
+        .curated-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .curated-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .curated-card {
+            background: #141414;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .curated-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .curated-card-img {
+            width: 100%;
+            height: 350px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .curated-card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .curated-card:hover .curated-card-img img {
+            transform: scale(1.08);
+        }
+
+        .curated-card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 50%, rgba(0, 0, 0, 0.7) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .curated-card:hover .curated-card-overlay {
+            opacity: 1;
+        }
+
+        .curated-card-actions {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .curated-card-actions button,
+        .curated-card-actions a {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .curated-atc-btn {
+            background: #fff;
+            color: #000;
+        }
+
+        .curated-atc-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .curated-wish-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            backdrop-filter: blur(10px);
+        }
+
+        .curated-wish-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .curated-card-body {
+            padding: 20px;
+        }
+
+        .curated-product-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .curated-product-price {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* ─── COLLECTION CATEGORIES ─── */
+        .categories-section {
+            padding: 100px 5%;
+            background: var(--aura-bg);
+            position: relative;
+            z-index: 10;
+            transition: background-color 1.5s ease;
+        }
+
+        .categories-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .categories-label {
+            font-size: 12px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--aura-theme);
+            margin-bottom: 14px;
+            opacity: 0.7;
+            transition: color 1.5s ease;
+        }
+
+        .categories-title {
+            font-size: clamp(28px, 4vw, 48px);
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -1px;
+            transition: color 1.5s ease;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .category-card {
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            height: 420px;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
+
+        .category-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .category-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .category-card-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 40px 30px;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+        }
+
+        .category-card-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .category-card-cta {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* ─── NEWSLETTER ─── */
+        .newsletter-section {
+            padding: 100px 5%;
+            background: #ffffff;
+            position: relative;
+            z-index: 10;
+        }
+
+        .newsletter-inner {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .newsletter-label {
+            font-size: 12px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #999;
+            margin-bottom: 16px;
+        }
+
+        .newsletter-title {
+            font-size: clamp(28px, 4vw, 44px);
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .newsletter-desc {
+            font-size: 16px;
+            color: #777;
+            margin-bottom: 40px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 12px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            background: #f5f5f5;
+            color: #1a1a1a;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .newsletter-form input:focus {
+            border-color: #999;
+        }
+
+        .newsletter-form input::placeholder {
+            color: #aaa;
+        }
+
+        .newsletter-form button {
+            padding: 16px 32px;
+            border-radius: 12px;
+            border: none;
+            background: #1a1a1a;
+            color: #fff;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .newsletter-form button:hover {
+            background: #333;
+            transform: translateY(-2px);
+        }
+
+
+
+        /* ─── FOOTER ─── */
+        .site-footer {
+            padding: 80px 5% 40px;
+            background: var(--aura-bg);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            position: relative;
+            z-index: 10;
+            transition: background-color 1.5s ease;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+            max-width: 1400px;
+            margin: 0 auto 60px;
+        }
+
+        @media (max-width: 768px) {
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 40px;
+            }
+        }
+
+        .footer-brand {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 16px;
+            transition: color 1.5s ease;
+        }
+
+        .footer-brand span {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .footer-about {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.4);
+            line-height: 1.7;
+            max-width: 300px;
+        }
+
+        .footer-heading {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #fff;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-copyright {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+            justify-content: center;
+        }
+
+        .footer-social a {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 18px;
+        }
+
+        .footer-social a:hover {
+            background: var(--aura-theme);
+            color: #fff;
+            box-shadow: 0 5px 15px var(--aura-glow);
+        }
+    </style>
+
+
+
+    <!-- ═══════════════════════ -->
+    <!-- COLLECTION CATEGORIES  -->
+    <!-- ═══════════════════════ -->
+    <section class="categories-section">
+        <div class="categories-header">
+            <div class="categories-label">Browse By</div>
+            <h2 class="categories-title">Shop Collections</h2>
+        </div>
+
+        <div class="categories-grid">
+            <a href="shop.html?category=outerwear" class="category-card">
+                <img src="assets/collection_outerwear_1772654546100.png" alt="Outerwear">
+                <div class="category-card-content">
+                    <div class="category-card-name">Outerwear</div>
+                    <div class="category-card-cta">Shop Now →</div>
+                </div>
+            </a>
+            <a href="shop.html?category=accessories" class="category-card">
+                <img src="assets/collection_accessories_1772654559650.png" alt="Accessories">
+                <div class="category-card-content">
+                    <div class="category-card-name">Accessories</div>
+                    <div class="category-card-cta">Shop Now →</div>
+                </div>
+            </a>
+            <a href="shop.html?category=essentials" class="category-card">
+                <img src="assets/collection_essentials_1772654573869.png" alt="Essentials">
+                <div class="category-card-content">
+                    <div class="category-card-name">Essentials</div>
+                    <div class="category-card-cta">Shop Now →</div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- ═══════════════════ -->
+    <!-- NEWSLETTER SECTION -->
+    <!-- ═══════════════════ -->
+    <section class="newsletter-section">
+        <div class="newsletter-inner">
+            <div class="newsletter-label">Stay in the Loop</div>
+            <h2 class="newsletter-title">Join the Community</h2>
+            <p class="newsletter-desc">Be the first to know about new drops, exclusive offers, and behind-the-scenes
+                content.</p>
+            <form class="newsletter-form"
+                onsubmit="event.preventDefault(); this.querySelector('button').textContent='Subscribed ✓'; this.querySelector('input').value='';">
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+
+
+    <!-- ═══════════════ -->
+    <!-- FOOTER          -->
+    <!-- ═══════════════ -->
+    <div id="footer-placeholder"></div>
+    <script src="global.js"></script>
+
+
+    <!-- Link SDK -->
+    <script id="ce-engine-script" src="../sdk/engine_v5_final.js" data-api-url="http://127.0.0.1:5001"
+        data-store-key="pk_live_6bf90196f1ba428e8f1ff44fa3d506df"></script>
+
+    <!-- Custom Animation Logic -->
+    <script>
+        // ===== Orbit Showcase Logic (Curved Path) =====
+        (function () {
+            const section = document.getElementById('orbit-showcase');
+            const canvas = document.getElementById('orbit-canvas');
+            const progressBar = document.getElementById('orbit-progress');
+            const titleEl = document.getElementById('orbit-title');
+            const priceEl = document.getElementById('orbit-price');
+            const descEl = document.getElementById('orbit-desc');
+            const atcBtn = document.getElementById('orbit-atc-btn');
+            const dataSource = document.getElementById('orbit-data-source');
+            let floaters = [];
+            let productData = [];
+            let total = 0;
+            let currentProductId = null;
+
+            // Arc: starts OFF-SCREEN below, curves through center, exits top-right
+            const ARC = [
+                { x: 5, y: 85, scale: 1, opacity: 1 },
+                { x: 25, y: 30, scale: 1.05, opacity: 1 },
+                { x: 48, y: -10, scale: 0.9, opacity: 0 },
+            ];
+
+            // Listen for SDK's ce-products-loaded event
+            dataSource.addEventListener('ce-products-loaded', (e) => {
+                if (total > 0) return; // already built
+                buildOrbit(e.detail.products);
+            });
+
+            function buildOrbit(products) {
+                total = products.length;
+                products.forEach((p, i) => {
+                    const imgUrl = p.imageUrl || p.imageUrl || '';
+                    const data = {
+                        title: p.title,
+                        price: '$' + (p.salePrice || p.price),
+                        rawPrice: p.price,
+                        salePrice: p.salePrice || null,
+                        desc: p.description || 'Premium quality footwear.',
+                        img: imgUrl,
+                        link: 'product.html?slug=' + p.slug,
+                        id: p.id
+                    };
+                    productData.push(data);
+
+                    const el = document.createElement('div');
+                    el.className = 'orbit-product';
+                    el.setAttribute('data-product-id', data.id);
+                    el.style.opacity = '0';
+                    el.style.transform = 'translate(5vw, 100vh) scale(0.8)';
+                    el.innerHTML = `
+                        <div class="orbit-product-inner">
+                            <div class="orbit-product-img">
+                                <img src="${data.img}" alt="${data.title}">
+                                <div class="orbit-hover-overlay">
+                                    <a href="${data.link}" class="orbit-hover-btn orbit-view-btn">View Product</a>
+                                    <button class="orbit-hover-btn orbit-wishlist-btn"
+                                            data-commerce="wishlist-toggle"
+                                            data-product-id="${data.id}">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.78-8.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                        </svg>
+                                        Wishlist
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="orbit-product-info">
+                                <div class="orbit-product-name">${data.title}</div>
+                                <div class="orbit-product-price">${data.price}</div>
+                            </div>
+                        </div>
+                    `;
+                    canvas.appendChild(el);
+                    floaters.push(el);
+                });
+
+                // Bind SDK wishlist-toggle buttons in the new orbit elements
+                canvas.querySelectorAll('[data-commerce="wishlist-toggle"]').forEach(btn => {
+                    if (btn.__commerceBound) return;
+                    btn.__commerceBound = true;
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const pid = btn.getAttribute('data-product-id') || btn.closest('[data-product-id]')?.getAttribute('data-product-id');
+                        if (pid && window.__commerceEngine) {
+                            window.__commerceEngine.toggleWishlist(pid);
+                        }
+                    });
+                });
+
+                updateText(0);
+
+                // Add to Cart button — uses current active product data
+                atcBtn.addEventListener('click', () => {
+                    const pd = productData[lastActiveIdx] || productData[0];
+                    if (pd && window.__commerceEngine) {
+                        window.__commerceEngine.addToCart(pd.id, null, pd.title, pd.rawPrice, pd.img, 1, pd.salePrice);
+                    }
+                });
+
+                window.addEventListener('scroll', onOrbitScroll, { passive: true });
+                onOrbitScroll();
+            }
+
+            let lastActiveIdx = -1;
+            function updateText(idx) {
+                if (idx === lastActiveIdx || !productData[idx]) return;
+                lastActiveIdx = idx;
+                const p = productData[idx];
+                titleEl.textContent = p.title;
+                priceEl.textContent = p.price;
+                descEl.textContent = p.desc;
+                currentProductId = p.id;
+                // Update ATC button's product-id for SDK compatibility
+                atcBtn.setAttribute('data-product-id', p.id);
+            }
+
+            function getArcPosition(t) {
+                t = Math.max(0, Math.min(1, t));
+                const p0 = ARC[0], p1 = ARC[1], p2 = ARC[2];
+                const x = (1 - t) * (1 - t) * p0.x + 2 * (1 - t) * t * p1.x + t * t * p2.x;
+                const y = (1 - t) * (1 - t) * p0.y + 2 * (1 - t) * t * p1.y + t * t * p2.y;
+                const scale = (1 - t) * (1 - t) * p0.scale + 2 * (1 - t) * t * p1.scale + t * t * p2.scale;
+                const opacity = (1 - t) * (1 - t) * p0.opacity + 2 * (1 - t) * t * p1.opacity + t * t * p2.opacity;
+                return { x, y, scale, opacity };
+            }
+
+            function onOrbitScroll() {
+                if (!section || total === 0) return;
+                const rect = section.getBoundingClientRect();
+                const scrollable = section.offsetHeight - window.innerHeight;
+                let progress = Math.max(0, Math.min(1, -rect.top / scrollable));
+
+                if (progressBar) progressBar.style.width = (progress * 100) + '%';
+
+                let closestIdx = 0;
+                let closestDist = Infinity;
+
+                floaters.forEach((el, i) => {
+                    const start = i / total;
+                    const end = (i + 1) / total;
+                    let t = (progress - start) / (end - start);
+
+                    if (t < -0.1) {
+                        // Not yet visible — parked off-screen below
+                        el.style.transform = 'translate(5vw, 100vh) scale(0.8)';
+                        el.style.opacity = '0';
+                    } else if (t > 1.1) {
+                        // Exited — parked off-screen above
+                        const pos = getArcPosition(1);
+                        el.style.transform = `translate(${pos.x}vw, ${pos.y}vh) scale(${pos.scale})`;
+                        el.style.opacity = '0';
+                    } else {
+                        const clampedT = Math.max(0, Math.min(1, t));
+                        const pos = getArcPosition(clampedT);
+                        // Fade in/out at edges
+                        let alpha = pos.opacity;
+                        if (t < 0.1) alpha = Math.max(0, t / 0.1);
+                        el.style.transform = `translate(${pos.x}vw, ${pos.y}vh) scale(${pos.scale})`;
+                        el.style.opacity = String(Math.max(0, Math.min(1, alpha)));
+                    }
+
+                    const dist = Math.abs(((progress - start) / (end - start)) - 0.3);
+                    if (dist < closestDist && t >= 0 && t <= 1) {
+                        closestDist = dist;
+                        closestIdx = i;
+                    }
+                });
+
+                updateText(closestIdx);
+            }
+        })();
+    </script>
+    <script>
+        (function () {
+            const trendingSection = document.getElementById('trending');
+            const trendingVisuals = document.getElementById('trending-visuals');
+            const trendingCollector = document.querySelector('[data-trending-collector]');
+            let trendingProducts = [];
+            let lastIndex = -1;
+
+            const syncTrending = () => {
+                const items = trendingCollector.querySelectorAll('.trending-data-item');
+                if (items.length === 0) return;
+
+                items.forEach((item) => {
+                    const id = item.dataset.id;
+                    if (!id || trendingProducts.find(p => p.id === id)) return;
+
+                    const data = {
+                        id: id,
+                        title: item.dataset.title || 'Product',
+                        desc: item.dataset.desc || '',
+                        img: item.dataset.img || '',
+                        price: item.dataset.price || '',
+                        link: item.dataset.link || '#'
+                    };
+                    trendingProducts.push(data);
+
+                    const div = document.createElement('div');
+                    const index = trendingProducts.length - 1;
+                    div.className = `trending-item group ${index === 0 ? 'active' : ''}`;
+                    div.innerHTML = `
+                        <img src="${data.img}" class="trending-img" alt="${data.title}">
+                        <button class="trending-wishlist-btn" data-commerce="wishlist-toggle" data-product-id="${data.id}">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.78-8.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                        </button>
+                        <div class="trending-overlay">
+                            <a href="${data.link}" class="trending-hover-btn" data-field="link">View Product</a>
+                        </div>
+                    `;
+                    trendingVisuals.appendChild(div);
+
+                    if (window.__commerceEngine) {
+                        window.__commerceEngine.bindButtons(div);
+                        window.__commerceEngine.updateWishlistIcons();
+                    }
+                });
+
+                if (trendingProducts.length > 0 && !window.hasTrendingScroll) {
+                    window.hasTrendingScroll = true;
+                    window.addEventListener('scroll', handleScroll, { passive: true });
+                    handleScroll();
+                }
+            };
+
+            const handleScroll = () => {
+                if (!trendingSection || trendingProducts.length === 0) return;
+
+                const rect = trendingSection.getBoundingClientRect();
+                const totalHeight = trendingSection.offsetHeight;
+                const viewHeight = window.innerHeight;
+                const scrollable = totalHeight - viewHeight;
+
+                let progress = -rect.top / scrollable;
+                progress = Math.max(0, Math.min(0.999, progress));
+
+                const index = Math.floor(progress * trendingProducts.length);
+                if (index !== lastIndex) {
+                    lastIndex = index;
+                    const product = trendingProducts[index];
+                    
+                    const titleEl = document.getElementById('trending-title');
+                    const descEl = document.getElementById('trending-desc');
+                    const priceEl = document.getElementById('trending-price');
+                    const linkEl = document.getElementById('trending-link');
+
+                    if (titleEl) titleEl.textContent = product.title;
+                    if (descEl) descEl.textContent = product.desc;
+                    if (priceEl) priceEl.textContent = product.price;
+                    if (linkEl) linkEl.href = product.link;
+
+                    const items = trendingVisuals.querySelectorAll('.trending-item');
+                    items.forEach((item, i) => {
+                        item.classList.remove('active', 'past');
+                        if (i === index) item.classList.add('active');
+                        else if (i < index) item.classList.add('past');
+                    });
+                }
+            };
+
+            // Initialization events
+            trendingCollector.addEventListener('ce-products-loaded', syncTrending);
+            const observer = new MutationObserver(syncTrending);
+            observer.observe(trendingCollector, { childList: true });
+
+            // Initial and delayed checks
+            syncTrending();
+            setTimeout(syncTrending, 1000);
+            setTimeout(syncTrending, 3000);
+        })();
+    </script>
+
+    <script>
+        (function () {
+            // Original Aura Scroll Logic
+            // Configuration tied to our variant colors matching AuraPuffer
+            const THEMES = {
+                orange: {
+                    hex: '#F27D26',
+                    glow: 'rgba(242, 125, 38, 0.15)',
+                    dark: '#F27D26', // Now matches Hero exactly
+                    grad: 'radial-gradient(circle at 50% 50%, #F27D26 0%, #A34500 100%)'
+                },
+                olive: {
+                    hex: '#5A5A40',
+                    glow: 'rgba(90, 90, 64, 0.15)',
+                    dark: '#5A5A40', // Now matches Hero exactly
+                    grad: 'radial-gradient(circle at 50% 50%, #5A5A40 0%, #2A2A1A 100%)'
+                },
+                purple: {
+                    hex: '#7B61FF',
+                    glow: 'rgba(123, 97, 255, 0.15)',
+                    dark: '#7B61FF', // Now matches Hero exactly
+                    grad: 'radial-gradient(circle at 50% 50%, #7B61FF 0%, #3B217F 100%)'
+                }
+            };
+
+            let lastImageSrc = '';
+            let isFirstLoad = true;
+
+            // 1. Initial Load Animations
+            function launchAnimations() {
+                const title = document.getElementById('anim-title');
+                const desc = document.getElementById('anim-desc');
+                const actions = document.getElementById('anim-actions');
+                const price = document.getElementById('anim-price');
+
+                setTimeout(() => {
+                    if (title) {
+                        title.style.transition = 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                        title.style.transform = 'translateX(0)';
+                        title.style.opacity = '1';
+                    }
+
+                    setTimeout(() => {
+                        if (desc) {
+                            desc.style.transition = 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                            desc.style.transform = 'translateX(0)';
+                            desc.style.opacity = '1';
+                        }
+                    }, 200);
+
+                    setTimeout(() => {
+                        if (actions) {
+                            actions.style.transition = 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                            actions.style.transform = 'translateY(0)';
+                            actions.style.opacity = '1';
+                        }
+                    }, 400);
+
+                    setTimeout(() => {
+                        if (price) {
+                            price.style.transition = 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                            price.style.transform = 'translateX(0)';
+                            price.style.opacity = '1';
+                        }
+                    }, 600);
+                }, 100);
+            }
+
+            // 2. Custom Style Injection for SDK variant buttons
+            function injectSDKOverrides() {
+                const style = document.createElement('style');
+                style.innerHTML = `
+          /* Override color buttons */
+          [data-attribute="Color"] .wfc-variant-btn {
+            width: 2.5rem !important; height: 2.5rem !important;
+            border-radius: 9999px !important; border: 2px solid transparent !important;
+            padding: 0 !important; color: transparent !important; font-size: 0 !important; /* Hide label text inside the button */
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+          }
+          [data-attribute="Color"] .wfc-variant-btn.active {
+            border-color: white !important; transform: scale(1.1) !important;
+          }
+          [data-attribute="Color"] {
+            display: flex !important; flex-wrap: wrap !important; gap: 10px !important; flex-direction: row !important;
+          }
+          /* Hack to map variant string labels to colors if SDK backend didn't */
+          button.wfc-variant-btn[data-attr-value*="Orange"] { background-color: #F27D26 !important; }
+          button.wfc-variant-btn[data-attr-value*="Olive"] { background-color: #5A5A40 !important; }
+          button.wfc-variant-btn[data-attr-value*="Purple"] { background-color: #7B61FF !important; }
+
+          /* Override Size buttons */
+          [data-attribute="Size"] .wfc-variant-options {
+            display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 0.5rem !important; width: 100% !important;
+          }
+          [data-attribute="Size"] .wfc-variant-btn {
+            height: 2.5rem !important; border-radius: 0.75rem !important; border: 1px solid rgba(255,255,255,0.1) !important;
+            background: transparent !important; color: white !important; font-weight: 700 !important;
+            transition: all 0.3s !important;
+          }
+          [data-attribute="Size"] .wfc-variant-btn:hover { border-color: rgba(255,255,255,0.4) !important; }
+          [data-attribute="Size"] .wfc-variant-btn.active { background: white !important; color: black !important; border-color: white !important; }
+        `;
+                document.head.appendChild(style);
+            }
+
+            // 3. Variant Change Logic (Background & Text)
+            function updateTheme(colorKey) {
+                if (!THEMES[colorKey]) return;
+
+                const theme = THEMES[colorKey];
+                document.documentElement.style.setProperty('--aura-theme', theme.hex);
+                document.documentElement.style.setProperty('--aura-grad', theme.grad);
+
+                // Update bg
+                const dynamicBg = document.getElementById('dynamic-bg');
+                const imageGlow = document.getElementById('image-glow');
+                if (dynamicBg) dynamicBg.style.background = theme.grad;
+                if (imageGlow) imageGlow.style.backgroundColor = theme.hex;
+
+                // Logo pulse
+                const logo = document.getElementById('abstract-logo');
+                if (logo) {
+                    logo.style.transform = 'scale(0.8)';
+                    logo.style.opacity = '0';
+                    setTimeout(() => {
+                        logo.style.transform = 'scale(1)';
+                        logo.style.opacity = '0.15';
+                    }, 400);
+                }
+
+                // Text bounce
+                const title = document.getElementById('anim-title');
+                if (title) {
+                    title.style.transition = 'all 0.2s';
+                    title.style.transform = 'translateX(-20px)';
+                    title.style.opacity = '0';
+                    setTimeout(() => {
+                        title.style.transition = 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                        title.style.transform = 'translateX(0)';
+                        title.style.opacity = '1';
+                    }, 300);
+                }
+
+                // Sync hero buttons with theme color
+                const addCartBtn = document.querySelector('[data-commerce="add-to-cart"][data-qty-id="hero-qty"]');
+                const wishlistBtn = document.getElementById('hero-wishlist-btn');
+                const themeHex = THEMES[colorKey].hex;
+
+                // Add tiny jump animation and forcefully override CSS using !important flag
+                if (addCartBtn) {
+                    addCartBtn.style.setProperty('background', themeHex, 'important');
+                    addCartBtn.style.setProperty('color', 'white', 'important');
+                    addCartBtn.style.setProperty('border-color', themeHex, 'important');
+                    addCartBtn.style.transform = 'scale(0.97)';
+                    setTimeout(() => addCartBtn.style.transform = 'scale(1)', 150);
+                }
+                if (wishlistBtn) {
+                    wishlistBtn.style.setProperty('border-color', themeHex, 'important');
+                    wishlistBtn.style.transform = 'scale(0.97)';
+                    setTimeout(() => wishlistBtn.style.transform = 'scale(1)', 150);
+                }
+            }
+
+            // Hero Quantity Selector Helpers
+            window.incrementQty = function () {
+                const input = document.getElementById('hero-qty');
+                if (input) input.value = parseInt(input.value) + 1;
+            };
+
+            window.decrementQty = function () {
+                const input = document.getElementById('hero-qty');
+                if (input && parseInt(input.value) > 1) input.value = parseInt(input.value) - 1;
+            };
+
+            // 4. Spring Image Animation
+            function springImage(imgEl, newSrc, dir, force = false, priceEl = null) {
+                if (imgEl.src === newSrc && !force) return;
+
+                const slideOut = dir > 0 ? 300 : -300;
+                const rotateOut = dir > 0 ? -15 : 15;
+
+                const slideIn = dir > 0 ? -300 : 300;
+                const rotateIn = dir > 0 ? 15 : -15;
+
+                // Exit
+                imgEl.style.transition = 'all 0.3s cubic-bezier(0.5, 0, 1, 1)';
+                imgEl.style.transform = `translateX(${slideOut}px) scale(0.7) rotate(${rotateOut}deg)`;
+                imgEl.style.opacity = '0';
+
+                if (priceEl) {
+                    priceEl.style.transition = 'all 0.3s cubic-bezier(0.5, 0, 1, 1)';
+                    priceEl.style.transform = `translateX(${slideOut}px) scale(0.7) rotate(${rotateOut}deg)`;
+                    priceEl.style.opacity = '0';
+                }
+
+                setTimeout(() => {
+                    // Reset position to other side hidden
+                    imgEl.style.transition = 'none';
+                    imgEl.style.transform = `translateX(${slideIn}px) scale(0.7) rotate(${rotateIn}deg)`;
+                    imgEl.src = newSrc; // Change source while hidden
+
+                    if (priceEl) {
+                        priceEl.style.transition = 'none';
+                        priceEl.style.transform = `translateX(${slideIn}px) scale(0.7) rotate(${rotateIn}deg)`;
+                    }
+
+                    // Wait image load before enter
+                    const doEnter = () => {
+                        requestAnimationFrame(() => {
+                            imgEl.style.transition = 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)'; // Spring-like
+                            imgEl.style.transform = 'translateX(0) scale(1) rotate(0deg)';
+                            imgEl.style.opacity = '1';
+
+                            if (priceEl) {
+                                priceEl.style.transition = 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                                priceEl.style.transform = 'none'; // reset to original inline transform
+                                priceEl.style.opacity = '1';
+                            }
+                        });
+                    };
+
+                    if (imgEl.complete) doEnter();
+                    else imgEl.onload = doEnter;
+                }, 350);
+            }
+
+            let lastColorKey = '';
+
+            // Initialize
+            window.addEventListener('DOMContentLoaded', () => {
+                injectSDKOverrides();
+                launchAnimations();
+
+                const imgEl = document.getElementById('main-product-image');
+
+                // Listen to Engine's event when user changes variant
+                document.addEventListener('ce-variant-changed', (e) => {
+                    const variant = e.detail?.variant;
+                    if (!variant) return;
+
+                    // Update theme if color exists in variant attributes
+                    if (variant.attributes && variant.attributes.Color) {
+                        const color = variant.attributes.Color.toLowerCase();
+                        let themeKey = '';
+                        if (color.includes('orange')) themeKey = 'orange';
+                        else if (color.includes('olive')) themeKey = 'olive';
+                        else if (color.includes('purple')) themeKey = 'purple';
+
+                        if (themeKey) {
+                            updateTheme(themeKey);
+                            lastColorKey = themeKey;
+                            try { localStorage.setItem('aura_active_theme_key', themeKey); } catch (e) { }
+                        }
+                    }
+
+                    // Animations for homepage
+                    const newImageSrc = variant.imageUrl || lastImageSrc;
+                    const dir = Math.random() > 0.5 ? 1 : -1;
+                    const priceEl = document.getElementById('anim-price');
+                    springImage(imgEl, newImageSrc, dir, true, priceEl);
+                    lastImageSrc = newImageSrc;
+                });
+
+                // Intercept SDK's direct DOM mutation for initial load
+                const observer = new MutationObserver((mutations) => {
+                    for (const m of mutations) {
+                        if (m.attributeName === 'src') {
+                            const src = imgEl.src;
+                            if (isFirstLoad && src) {
+                                lastImageSrc = src;
+                                isFirstLoad = false;
+                            } else if (src && src.includes('http') && src !== lastImageSrc) {
+                                // If SDK somehow updated it directly without event
+                                const oldSrc = lastImageSrc;
+                                imgEl.src = oldSrc; // revert instantly
+                                springImage(imgEl, src, 1); // trigger spring to the new src safely
+                                lastImageSrc = src;
+                            }
+                        }
+                    }
+                });
+                if (imgEl) observer.observe(imgEl, { attributes: true, attributeFilter: ['src'] });
+
+                // Check for saved theme on start
+                try {
+                    const savedTheme = localStorage.getItem('aura_active_theme_key');
+                    if (savedTheme) {
+                        updateTheme(savedTheme);
+                        lastColorKey = savedTheme;
+                    }
+                } catch (e) {
+                    console.warn('LocalStorage access blocked:', e);
+                }
+
+            });
+
+        })();
+    </script>
+    <!-- Commerce Engine SDK already in head -->
+</body>
+
+</html>

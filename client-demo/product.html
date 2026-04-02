@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details — AURA</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        :root {
+            --aura-theme: #999;
+            --aura-grad: rgba(251, 251, 251, 0.85);
+            --aura-bg: #fbfbfb;
+            --text-main: #1a1a1a;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--aura-bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+            margin: 0;
+        }
+
+        /* ═══════════════════ */
+        /* PREMIUM BACKGROUND  */
+        /* ═══════════════════ */
+        .dynamic-bg-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--aura-grad);
+            opacity: 0.02;
+            /* Extremely subtle */
+            z-index: -1;
+            transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .ambient-orb {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: var(--aura-theme);
+            filter: blur(150px);
+            border-radius: 50%;
+            opacity: 0.03;
+            z-index: -1;
+            top: 20%;
+            right: -10%;
+            pointer-events: none;
+        }
+
+        /* ═══════════════════ */
+        /* NAVIGATION SYNC     */
+        /* ═══════════════════ */
+        .navbar {
+            transition: all 0.4s;
+            backdrop-filter: blur(0px) !important;
+            -webkit-backdrop-filter: blur(0px) !important;
+            border-bottom: 1px solid transparent !important;
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+
+        .navbar.nav-scrolled {
+            backdrop-filter: blur(24px) !important;
+            -webkit-backdrop-filter: blur(24px) !important;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+            background: var(--aura-grad) !important;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03) !important;
+        }
+
+        .navbar-pill {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .logo-pulse {
+            animation: pulse-logo 3s infinite alternate;
+        }
+
+        @keyframes pulse-logo {
+            0% {
+                opacity: 0.1;
+            }
+
+            100% {
+                opacity: 0.2;
+            }
+        }
+
+        /* Final Aggressive Backdrop */
+        html, body {
+            background-color: #0a0a0a !important;
+            margin: 0;
+            padding: 0;
+        }
+
+        .product-hero-wrap {
+            position: relative;
+            width: 100%;
+            background: #F27D26 !important; /* FORCED ORANGE */
+            overflow: hidden;
+            min-height: 600px;
+        }
+
+        .hero-glow-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, #F27D26 0%, #A34500 100%);
+            opacity: 1;
+            filter: blur(60px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .navbar {
+            background: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+        
+        #main-nav:not(.nav-scrolled) {
+            background: transparent !important;
+        }
+
+        /* ═══════════════════ */
+        /* PRODUCT LAYOUT      */
+        /* ═══════════════════ */
+        .product-main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 160px 5% 60px;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 80px;
+            min-height: 80vh;
+            position: relative;
+            z-index: 2;
+        }
+
+        .product-visuals {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .main-image-wrapper {
+            aspect-ratio: 4/5;
+            background: #fff;
+            border-radius: 40px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.05);
+        }
+
+        .main-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .image-overlay-glow {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, var(--aura-theme) 0%, transparent 70%);
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        /* Mini Gallery */
+        .gallery-mini {
+            display: flex;
+            gap: 16px;
+            margin-top: 24px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            scrollbar-width: none;
+        }
+
+        .thumb-card {
+            width: 90px;
+            height: 90px;
+            border-radius: 20px;
+            overflow: hidden;
+            flex-shrink: 0;
+            cursor: pointer;
+            border: 2px solid transparent;
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s;
+        }
+
+        .thumb-card.active {
+            border-color: var(--aura-theme);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .thumb-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+
+        .thumb-card.active img,
+        .thumb-card:hover img {
+            opacity: 1;
+        }
+
+        /* Details Section */
+        .product-info {
+            padding: 20px 0;
+        }
+
+        .product-category {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--aura-theme);
+            margin-bottom: 16px;
+            display: block;
+            opacity: 0.8;
+        }
+
+        .product-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            font-style: italic;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+            color: #111;
+        }
+
+        .product-card-luxury {
+            background: #ffffff;
+            padding: 60px;
+            border-radius: 48px;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            position: relative;
+            z-index: 10;
+        }
+
+        .price-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .current-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #111;
+        }
+
+        .original-price {
+            font-size: 1.5rem;
+            opacity: 0.3;
+            text-decoration: line-through;
+        }
+
+        /* Variant Options - Simplified for Luxury Card */
+        .variant-section-sub {
+            margin-bottom: 40px;
+            padding: 24px 0;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .variant-group {
+            margin-bottom: 32px;
+            position: relative;
+        }
+
+        .variant-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .variant-label, .wfc-variant-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            margin-top: 8px;
+            display: block;
+            opacity: 0.4;
+        }
+
+        /* Spacing for Injected Variants */
+        .wfc-attribute-group {
+            margin-bottom: 24px;
+        }
+
+        .aura-variant-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        /* Action Grid */
+        .action-container {
+            display: flex;
+            gap: 16px;
+            margin-top: 40px;
+        }
+
+        .atc-btn-aura {
+            flex: 1;
+            background: var(--aura-theme);
+            color: white;
+            padding: 1.25rem;
+            border-radius: 24px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            border: none;
+            box-shadow: 0 20px 40px rgba(242, 125, 38, 0.2);
+        }
+
+        .atc-btn-aura:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(242, 125, 38, 0.3);
+            filter: brightness(1.1);
+        }
+
+        .wishlist-btn-aura {
+            width: 68px;
+            height: 68px;
+            background: #fff;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s;
+            color: #111;
+            font-size: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+        }
+
+        .wishlist-btn-aura:hover {
+            border-color: var(--aura-theme);
+            color: var(--aura-theme);
+            transform: translateY(-3px);
+        }
+
+        /* Description / Tabs */
+        .full-desc-section {
+            margin-top: 80px;
+            padding-top: 60px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--aura-theme);
+            margin-bottom: 24px;
+            display: block;
+        }
+
+        .desc-text {
+            font-size: 1.25rem;
+            line-height: 1.8;
+            color: #444;
+            max-width: 800px;
+        }
+
+        /* ═══════════════════ */
+        /* RELATED PRODUCTS    */
+        /* ═══════════════════ */
+        .related-section {
+            padding: 120px 0;
+            background: #fff;
+            margin-top: 0;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-top: 48px;
+        }
+
+        .related-card-wrap {
+            position: relative;
+        }
+
+        .wishlist-toggle-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 20;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+            color: #1a1a1a;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .related-card-wrap:hover .wishlist-toggle-btn {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .wishlist-toggle-btn:hover {
+            background: #fff;
+            color: #ff3b30;
+            transform: scale(1.1) !important;
+        }
+
+        .wishlist-toggle-btn.wfc-wishlisted {
+            opacity: 1;
+            transform: scale(1);
+            color: #ff3b30;
+            background: #fff;
+        }
+
+        .related-card {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.4s;
+        }
+
+        .related-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .related-img-wrap {
+            aspect-ratio: 1/1;
+            background: #f8f8f8;
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .related-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .related-card-wrap:hover .related-img-wrap img {
+            transform: scale(1.05);
+        }
+
+        .card-tag {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--aura-theme);
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .related-name {
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 4px;
+            color: #1a1a1a;
+        }
+
+        .related-price {
+            font-weight: 600;
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* Wishlist Heart fill for product.html */
+        .wfc-wishlisted svg path {
+            fill: currentColor !important;
+        }
+
+        /* ═══════════════════ */
+        /* RESPONSIVE          */
+        /* ═══════════════════ */
+        @media (max-width: 1024px) {
+            .product-main-container {
+                grid-template-columns: 1fr;
+                margin-top: 120px;
+                gap: 40px;
+            }
+
+            .product-visuals {
+                position: relative;
+                top: 0;
+            }
+
+            .product-title {
+                font-size: 3rem;
+            }
+
+            .related-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .related-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="product-hero-wrap">
+        <div class="hero-glow-overlay" id="hero-glow" style="background: radial-gradient(circle at 50% 50%, #F27D26 0%, #A34500 100%);"></div>
+        
+        <!-- Global Header -->
+        <div id="header-placeholder" class="relative z-20"></div>
+
+        <!-- MAIN SCOPE -->
+        <main class="product-main-container relative z-10" data-commerce="product-detail">
+        <!-- Visuals -->
+        <div class="product-visuals">
+            <div class="main-image-wrapper" id="main-image-reveal">
+                <img src="" alt="" data-field="image" id="target-main-image">
+                <div class="image-overlay-glow"></div>
+            </div>
+
+            <!-- Gallery -->
+            <div class="gallery-mini" data-field="gallery" id="gallery-reveal">
+                <!-- thumbnails injected -->
+            </div>
+        </div>
+
+        <!-- Details -->
+        <div class="product-info">
+            <div class="product-card-luxury" id="info-reveal">
+                <span class="product-category" data-field="category">Collection 2026</span>
+                <h1 class="product-title" data-field="title">Product Name</h1>
+                <div data-field="rating" style="margin-top: -12px; margin-bottom: 24px;"></div>
+
+                <div class="price-row" id="price-reveal">
+                    <div data-field="price">
+                        <span class="current-price">$0.00</span>
+                    </div>
+                </div>
+
+                <div class="variant-section-sub" id="variants-reveal">
+                    <!-- Variant Attributes will be injected here -->
+                    <div id="variant-selector-root">
+                        <!-- Label is hidden by engine.js if no variants -->
+                        <div class="variant-group" data-commerce="variant-group">
+                            <div class="wfc-attribute-group" data-commerce="variant-options">
+                                <!-- Injected by engine.js -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="variant-group">
+                        <span class="variant-label">Quantity</span>
+                        <div
+                            style="display: flex; align-items: center; background: #f8f8f8; width: fit-content; border-radius: 16px; padding: 4px;">
+                            <button onclick="document.getElementById('p-qty').stepDown()"
+                                style="width: 44px; height: 44px; font-weight: 700; border:none; background:none; cursor:pointer;">−</button>
+                            <input type="number" id="p-qty" data-commerce="quantity-input" value="1" min="1"
+                                style="width: 50px; text-align: center; background: none; border: none; font-weight: 700; font-size: 1rem;">
+                            <button onclick="document.getElementById('p-qty').stepUp()"
+                                style="width: 44px; height: 44px; font-weight: 700; border:none; background:none; cursor:pointer;">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="action-container" id="actions-reveal">
+                    <button class="atc-btn-aura" data-commerce="add-to-cart">
+                        Add to Bag
+                    </button>
+                    <button class="wishlist-btn-aura" data-commerce="wishlist-toggle">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Deep Dive -->
+                <div class="full-desc-section" id="desc-reveal">
+                    <span class="section-label">Design Story</span>
+                    <div class="desc-text" data-field="description">
+                        Loading the narrative behind this creation...
+                    </div>
+                </div>
+
+                <!-- Customer Reviews Section -->
+                <div class="full-desc-section" id="reviews-reveal" style="margin-top: 40px; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 40px;">
+                    <span class="section-label">Voice of the Customer</span>
+                    <div data-commerce="reviews">
+                        <!-- SDK will inject review list here -->
+                    </div>
+                    <div data-commerce="review-form">
+                        <!-- SDK will inject review submission form here -->
+                    </div>
+                </div>
+            </div>
+    </main>
+    </div> <!-- Close .product-hero-wrap -->
+
+    <!-- RELATED PRODUCTS SECTION -->
+    <section class="related-section" style="background: #fbfbfb; position: relative; z-index: 10;">
+        <div style="max-width: 1400px; margin: 0 auto; padding: 0 5%;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 48px;">
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 3.5rem; font-style: italic; color: #1a1a1a;">You May Also Adore</h2>
+                <a href="shop.html" style="font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #999; text-decoration: none;">Explore All</a>
+            </div>
+            
+            <div style="visibility:hidden; height:0; overflow:hidden;" data-commerce="product-list" data-limit="5" id="related-data">
+                <!-- Hidden list for SDK -->
+            </div>
+
+            <!-- Target Grid -->
+            <div class="related-grid" id="related-grid-target">
+                <!-- Spilled here by SDK -->
+            </div>
+        </div>
+    </section>
+
+    <!-- SHARED FOOTER FROM INDEX -->
+    <div id="footer-placeholder"></div>
+    <script src="global.js"></script>
+
+    <!-- ENGINE -->
+    <script src="../sdk/engine_v5_final.js" data-api-url="http://127.0.0.1:5001"
+        data-store-key="pk_live_6bf90196f1ba428e8f1ff44fa3d506df"></script>
+
+    <script>
+        const THEMES = {
+            orange: { hex: '#F27D26', grad: 'radial-gradient(circle at 50% 50%, #F27D26 0%, #A34500 100%)' },
+            olive: { hex: '#5A5A40', grad: 'radial-gradient(circle at 50% 50%, #5A5A40 0%, #2A2A1A 100%)' },
+            purple: { hex: '#7B61FF', grad: 'radial-gradient(circle at 50% 50%, #7B61FF 0%, #3B217F 100%)' }
+        };
+
+        function updateTheme(colorKey) {
+            const theme = THEMES[colorKey.toLowerCase()] || THEMES.orange;
+            document.documentElement.style.setProperty('--aura-theme', theme.hex);
+            document.documentElement.style.setProperty('--aura-grad', theme.grad);
+            
+            // Sync product hero backdrop
+            const heroGlow = document.getElementById('hero-glow');
+            if (heroGlow) heroGlow.style.background = theme.grad;
+        }
+
+        function animateEntrance() {
+            const tl = gsap.timeline({ defaults: { ease: "power4.out", duration: 1.5 } });
+            tl.from(".navbar", { y: -100, opacity: 0 }, 0)
+                .from("#main-image-reveal", { x: -40, opacity: 0, scale: 0.95 }, 0.2)
+                .from("#gallery-reveal", { y: 20, opacity: 0 }, 0.5)
+                .from("#info-reveal", { x: 40, opacity: 0 }, 0.3)
+                .from("#desc-reveal", { y: 30, opacity: 0 }, 0.6);
+        }
+
+        function setupGallery() {
+            const gallery = document.querySelector('[data-field="gallery"]');
+            const mainImg = document.getElementById('target-main-image');
+            if (!gallery) return;
+
+            const observer = new MutationObserver(() => {
+                const imgs = gallery.querySelectorAll('img');
+                if (imgs.length > 0) {
+                    imgs.forEach(img => {
+                        if (img.parentElement.classList.contains('thumb-card')) return;
+                        const card = document.createElement('div');
+                        card.className = 'thumb-card';
+                        img.parentNode.insertBefore(card, img);
+                        card.appendChild(img);
+                        card.addEventListener('click', () => {
+                            gallery.querySelectorAll('.thumb-card').forEach(c => c.classList.remove('active'));
+                            card.classList.add('active');
+                            gsap.to(mainImg, {
+                                opacity: 0, scale: 0.98, duration: 0.3, onComplete: () => {
+                                    mainImg.src = img.src;
+                                    gsap.to(mainImg, { opacity: 1, scale: 1, duration: 0.6, ease: "power2.out" });
+                                }
+                            });
+                        });
+                    });
+                    const first = gallery.querySelector('.thumb-card');
+                    if (first) first.classList.add('active');
+                    observer.disconnect();
+                }
+            });
+            observer.observe(gallery, { childList: true, subtree: true });
+        }
+
+        // Bridge related products from hidden list to visible grid
+        function setupRelated() {
+            const source = document.getElementById('related-data');
+            const target = document.getElementById('related-grid-target');
+            if (!source || !target) return;
+
+            let renderingComplete = false;
+
+            const renderRelated = (products) => {
+                if (renderingComplete || !products || products.length === 0) return;
+                
+                const currentSlug = new URLSearchParams(window.location.search).get('slug');
+                const filtered = products.filter(p => !currentSlug || p.slug !== currentSlug).slice(0, 4);
+                
+                if (filtered.length === 0) return;
+
+                const getImageUrl = (url) => {
+                    if (window.__commerceEngine?.getImageUrl) return window.__commerceEngine.getImageUrl(url);
+                    if (!url) return 'https://placehold.co/630x630?text=Product';
+                    if (url.startsWith('http')) return url;
+                    return 'http://127.0.0.1:5001' + (url.startsWith('/') ? '' : '/') + url;
+                };
+
+                target.innerHTML = ''; 
+                filtered.forEach((p, i) => {
+                    const cardWrap = document.createElement('div');
+                    cardWrap.className = 'related-card-wrap group';
+                    cardWrap.innerHTML = `
+                        <button class="wishlist-toggle-btn" data-commerce="wishlist-toggle" data-product-id="${p.id || p._id}">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.78-8.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                        </button>
+                        <a href="product.html?slug=${p.slug}" class="related-card">
+                            <div class="related-img-wrap">
+                                <img src="${getImageUrl(p.imageUrl)}" alt="${p.title}" onerror="this.src='https://placehold.co/600x600?text=Product'">
+                            </div>
+                            <div class="text-center">
+                                <span class="card-tag">AURA PREMIUM</span>
+                                <h3 class="related-name">${p.title}</h3>
+                                <div class="related-price">${window.__commerceEngine?.config?.currencySymbol || '$'}${p.price}</div>
+                            </div>
+                        </a>
+                    `;
+                    target.appendChild(cardWrap);
+
+                    // Add manual click listener for dynamic wishlist buttons
+                    const toggleBtn = cardWrap.querySelector('[data-commerce="wishlist-toggle"]');
+                    if (toggleBtn) {
+                        toggleBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const pid = toggleBtn.getAttribute('data-product-id');
+                            if (window.__commerceEngine?.toggleWishlist) {
+                                window.__commerceEngine.toggleWishlist(pid);
+                            }
+                        });
+                    }
+                });
+                
+                // Final state sync for icons
+                if (window.__commerceEngine?.updateWishlistIcons) {
+                    window.__commerceEngine.updateWishlistIcons();
+                }
+
+                renderingComplete = true;
+                console.log("Related products successfully rendered (Products count: " + filtered.length + ")");
+            };
+
+            // Listen for events
+            source.addEventListener('ce-products-loaded', (e) => renderRelated(e.detail.products || []));
+            document.addEventListener('wfc:products-loaded', () => {
+                if (window.__commerceEngine && window.__commerceEngine.products) {
+                    renderRelated(window.__commerceEngine.products);
+                }
+            });
+
+            // Robust polling
+            let attempts = 0;
+            const poll = setInterval(() => {
+                attempts++;
+                if (renderingComplete || attempts > 20) {
+                    clearInterval(poll);
+                    return;
+                }
+                if (window.__commerceEngine && window.__commerceEngine.products && window.__commerceEngine.products.length > 0) {
+                    renderRelated(window.__commerceEngine.products);
+                }
+            }, 500);
+
+            // Fail-safe direct fetch
+            const storeKey = document.querySelector('script[data-store-key]')?.getAttribute('data-store-key') || '';
+            if (storeKey) {
+                fetch('http://127.0.0.1:5001/api/v1/public/products?limit=5', {
+                    headers: { 'x-store-key': storeKey }
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (!renderingComplete && data && data.products) {
+                        renderRelated(data.products);
+                    }
+                })
+                .catch(err => console.error("Related product fetch fail:", err));
+            }
+        }
+
+        window.addEventListener('load', () => {
+            animateEntrance();
+            setupGallery();
+            setupRelated();
+            
+            const savedTheme = localStorage.getItem('aura_active_theme_key');
+            if (savedTheme) updateTheme(savedTheme);
+        });
+
+        document.addEventListener('ce-variant-changed', (e) => {
+            const variant = e.detail?.variant;
+            if (!variant) return;
+
+            // Update Price
+            const priceEl = document.querySelector('.current-price');
+            const symbol = window.__commerceEngine?.config?.currencySymbol || '$';
+            if (priceEl && variant.price) {
+                priceEl.innerText = `${symbol}${variant.price.toFixed(2)}`;
+            }
+
+            if (variant.attributes && variant.attributes.Color) {
+                const color = variant.attributes.Color.toLowerCase();
+                let themeKey = '';
+                if (color.includes('orange')) themeKey = 'orange';
+                else if (color.includes('olive')) themeKey = 'olive';
+                else if (color.includes('purple')) themeKey = 'purple';
+                if (themeKey) {
+                    updateTheme(themeKey);
+                    localStorage.setItem('aura_active_theme_key', themeKey);
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

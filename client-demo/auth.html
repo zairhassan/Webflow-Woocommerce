@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Boutique | Authentication</title>
+    <!-- Commerce Engine SDK -->
+    <link rel="stylesheet" href="style.css">
+    <script src="../sdk/engine_v5_final.js" data-api-url="http://127.0.0.1:5001"
+        data-store-key="pk_live_6bf90196f1ba428e8f1ff44fa3d506df"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --aura-theme: #F27D26;
+            --aura-glow: rgba(242, 125, 38, 0.15);
+            --aura-grad: radial-gradient(circle at 50% 50%, #F27D26 0%, #A34500 100%);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Dynamic Animated Background */
+        .auth-bg-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, #151515 0%, #050505 100%);
+            z-index: -1;
+        }
+
+        .auth-glow-circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 480px;
+            padding: 40px;
+            z-index: 10;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            padding: 48px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: 0.5s;
+        }
+
+        .glass-card:hover::before {
+            left: 100%;
+        }
+
+        .auth-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .auth-subtitle {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 400;
+        }
+
+        .auth-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 4px;
+            margin-bottom: 32px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .auth-tab.active {
+            background: var(--aura-theme);
+            color: #fff;
+            box-shadow: 0 4px 15px var(--aura-glow);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .auth-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 16px 20px;
+            color: #fff;
+            font-size: 15px;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .auth-input:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--aura-theme);
+            box-shadow: 0 0 0 4px var(--aura-glow);
+        }
+
+        .wfc-auth-submit {
+            width: 100%;
+            padding: 18px;
+            background: var(--aura-theme);
+            color: #fff;
+            border: none;
+            border-radius: 18px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .wfc-auth-submit:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px var(--aura-glow);
+            filter: brightness(1.1);
+        }
+
+        .wfc-auth-submit:active {
+            transform: translateY(-2px);
+        }
+
+        .wfc-auth-error {
+            background: rgba(229, 62, 62, 0.1);
+            border: 1px solid rgba(229, 62, 62, 0.2);
+            color: #feb2b2;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .back-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 32px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 14px;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: var(--aura-theme);
+        }
+
+        /* Form Animation Classes */
+        .form-stagger {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-bg-layer" id="bg-layer"></div>
+
+    <div class="auth-container">
+        <div class="glass-card" id="main-card">
+            <div class="auth-brand">AURA</div>
+            <div class="auth-subtitle">Elevate Your Presence</div>
+
+            <div class="auth-tabs">
+                <div class="auth-tab pointer-events-auto" data-mode="login" id="tab-login">Sign In</div>
+                <div class="auth-tab pointer-events-auto" data-mode="register" id="tab-register">Register</div>
+            </div>
+
+            <form id="wfc-auth-form">
+                <div id="wfc-auth-fields">
+                    <div class="input-group form-stagger" id="name-fields" style="display: none;">
+                        <div class="flex gap-4">
+                            <input type="text" id="wfc-auth-firstname" placeholder="First Name" class="auth-input" />
+                            <input type="text" id="wfc-auth-lastname" placeholder="Last Name" class="auth-input" />
+                        </div>
+                    </div>
+                    <div class="input-group form-stagger">
+                        <input type="email" id="wfc-auth-email" placeholder="Email Address" class="auth-input"
+                            required />
+                    </div>
+                    <div class="input-group form-stagger">
+                        <input type="password" id="wfc-auth-password" placeholder="Password" class="auth-input"
+                            required />
+                    </div>
+                </div>
+
+                <div id="wfc-auth-error" class="wfc-auth-error" style="display:none"></div>
+
+                <button type="submit" class="wfc-auth-submit form-stagger">
+                    <span id="submit-text">Sign In</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </button>
+            </form>
+
+            <a href="index.html" class="back-link form-stagger">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Back to Boutique
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Background Animation ---
+        const bgLayer = document.getElementById('bg-layer');
+        const colors = ['#F27D26', '#7B61FF', '#5A5A40'];
+
+        for (let i = 0; i < 5; i++) {
+            const circle = document.createElement('div');
+            circle.className = 'auth-glow-circle';
+            const size = 300 + Math.random() * 400;
+            circle.style.width = `${size}px`;
+            circle.style.height = `${size}px`;
+            circle.style.background = colors[Math.floor(Math.random() * colors.length)];
+            circle.style.left = `${Math.random() * 100}%`;
+            circle.style.top = `${Math.random() * 100}%`;
+            bgLayer.appendChild(circle);
+
+            gsap.to(circle, {
+                x: 'random(-200, 200)',
+                y: 'random(-200, 200)',
+                duration: 'random(10, 20)',
+                repeat: -1,
+                yoyo: true,
+                ease: 'sine.inOut'
+            });
+        }
+
+        // --- 2. Initial Animation ---
+        window.onload = () => {
+            gsap.from("#main-card", {
+                duration: 1.2,
+                y: 60,
+                opacity: 0,
+                ease: "expo.out"
+            });
+
+            gsap.to(".form-stagger", {
+                duration: 0.8,
+                y: 0,
+                opacity: 1,
+                stagger: 0.1,
+                delay: 0.4,
+                ease: "power3.out"
+            });
+
+            // Check URL for mode
+            const params = new URLSearchParams(window.location.search);
+            const mode = params.get('mode') || 'login';
+            setMode(mode, false);
+        };
+
+        // --- 3. Mode Switching ---
+        const tabLogin = document.getElementById('tab-login');
+        const tabRegister = document.getElementById('tab-register');
+        const nameFields = document.getElementById('name-fields');
+        const submitText = document.getElementById('submit-text');
+
+        function setMode(mode, animate = true) {
+            const isLogin = mode === 'login';
+
+            tabLogin.classList.toggle('active', isLogin);
+            tabRegister.classList.toggle('active', !isLogin);
+            submitText.textContent = isLogin ? 'Sign In' : 'Create Account';
+
+            if (animate) {
+                if (isLogin) {
+                    gsap.to(nameFields, { height: 0, opacity: 0, duration: 0.4, onComplete: () => nameFields.style.display = 'none' });
+                } else {
+                    nameFields.style.display = 'block';
+                    gsap.fromTo(nameFields, { height: 0, opacity: 0 }, { height: 'auto', opacity: 1, duration: 0.6, ease: "back.out(1.7)" });
+                }
+            } else {
+                nameFields.style.display = isLogin ? 'none' : 'block';
+                nameFields.style.opacity = isLogin ? 0 : 1;
+                nameFields.style.height = isLogin ? 0 : 'auto';
+            }
+        }
+
+        tabLogin.onclick = () => setMode('login');
+        tabRegister.onclick = () => setMode('register');
+
+        // --- 4. Form Submission ---
+        const authForm = document.getElementById('wfc-auth-form');
+        authForm.onsubmit = (e) => {
+            e.preventDefault();
+
+            // GSAP Loading Feedback
+            gsap.to(".wfc-auth-submit", { scale: 0.95, duration: 0.1, yoyo: true, repeat: 1 });
+
+            if (window.__commerceEngine) {
+                window.__commerceEngine.submitAuth();
+            }
+        };
+
+        // Sync with engine theme colors
+        setInterval(() => {
+            const theme = getComputedStyle(document.documentElement).getPropertyValue('--aura-theme').trim();
+            if (theme && theme !== '#F27D26') {
+                gsap.to('.auth-glow-circle', { background: theme, duration: 2, overwrite: 'auto' });
+            }
+        }, 1000);
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Boutique | My Account Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="../sdk/engine_v5_final.js" data-api-url="http://127.0.0.1:5001"
+        data-store-key="pk_live_6bf90196f1ba428e8f1ff44fa3d506df"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        .bg-transition {
+            transition: background 1s ease-in-out, background-color 1.5s ease;
+        }
+
+        :root {
+            --aura-theme: #F27D26;
+            --aura-glow: rgba(242, 125, 38, 0.08);
+            --aura-bg-light: #fdfdfd;
+            --aura-glass: rgba(255, 255, 255, 0.7);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--aura-bg-light);
+            color: #1a1a1a;
+            overflow-x: hidden;
+        }
+
+        .luxury-sidebar {
+            background: #fff;
+            border-right: 1px solid rgba(0, 0, 0, 0.05);
+            min-height: calc(100vh - 84px);
+            position: sticky;
+            top: 84px;
+            padding: 40px 24px;
+            display: flex;
+            flex-direction: column;
+            z-index: 40;
+        }
+
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-brand-aura {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 48px;
+            padding: 0 16px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-radius: 16px;
+            color: #666;
+            font-weight: 500;
+            transition: all 0.3s;
+            cursor: pointer;
+            margin-bottom: 8px;
+            text-decoration: none;
+            border: 1px solid transparent;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #f8f8f8;
+            color: #000;
+        }
+
+        .nav-item.active {
+            background: var(--aura-glow);
+            color: var(--aura-theme);
+            border-color: rgba(242, 125, 38, 0.1);
+        }
+
+        .content-card {
+            background: #fff;
+            border-radius: 32px;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.01);
+            padding: 32px;
+            transition: all 0.4s ease;
+        }
+
+        .dashboard-section {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .dashboard-section.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .avatar-glow {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #F27D26 0%, #A34500 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 800;
+            color: #fff;
+            box-shadow: 0 10px 20px var(--aura-glow);
+            margin-bottom: 16px;
+        }
+
+        .metric-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 24px;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .metric-card:hover {
+            border-color: var(--aura-theme);
+            background: var(--aura-glow);
+        }
+
+        .order-row {
+            display: grid;
+            grid-template-columns: 120px 1fr 120px 100px;
+            padding: 20px;
+            border-bottom: 1px solid #f8f8f8;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .status-pill {
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .status-paid {
+            background: #ecfdf5;
+            color: #059669;
+        }
+
+        .status-pending {
+            background: #fffbeb;
+            color: #d97706;
+        }
+
+        .status-shipped {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .btn-aura {
+            background: #000;
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 13px;
+            transition: all 0.4s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .btn-aura:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-input {
+            width: 100%;
+            background: #f8f8f8;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .auth-input:focus {
+            border-color: var(--aura-theme);
+            background: #fff;
+            box-shadow: 0 0 0 4px var(--aura-glow);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #fff;
+            border-radius: 32px;
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Wishlist Cards */
+        .hub-product-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            transition: all 0.3s;
+        }
+
+        .hub-product-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--aura-theme);
+        }
+
+        .empty-state {
+            padding: 80px 20px;
+            text-align: center;
+            background: #fafafa;
+            border-radius: 32px;
+            border: 2px dashed #eee;
+        }
+
+        @media (max-width: 1024px) {
+            .luxury-sidebar {
+                height: auto;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                padding: 20px;
+            }
+
+            .nav-container {
+                display: flex;
+                gap: 8px;
+                overflow-x: auto;
+                padding-bottom: 10px;
+            }
+
+            .nav-item {
+                margin-bottom: 0;
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-[#fdfdfd]">
+    <div class="relative w-full flex flex-col overflow-hidden text-white">
+        <!-- Dynamic Background Gradient -->
+        <div id="dynamic-bg" class="absolute inset-0 z-0 bg-transition" style="background: var(--aura-grad);"></div>
+
+        <!-- Global Header -->
+        <div id="header-placeholder"></div>
+
+        <!-- Sub-Hero Content (Increased pt-48 for fixed nav sync) -->
+        <div class="cart-hero-content pt-48 pb-20 px-6 text-center relative z-10">
+            <span class="text-sm font-bold tracking-[0.4em] uppercase opacity-80 mb-4 block">Manage Your Presence</span>
+            <h1 class="text-6xl md:text-8xl font-serif italic mb-0">My Account</h1>
+        </div>
+    </div>
+
+    <div class="flex flex-col min-h-screen">
+        <div class="flex flex-1">
+
+            <div class="container mx-auto px-6 pb-20 relative z-10">
+                <!-- 
+                    UNIVERSAL ACCOUNT HUB 
+                    Customization Flags:
+                    - data-layout="vertical" (default) or "horizontal"
+                    - data-hide="wishlist,addresses" (comma separated)
+                -->
+                <div data-commerce="account-hub" data-layout="vertical"></div>
+            </div>
+
+            <script>
+                // Account Hub theme sync
+                document.addEventListener('ce-account-loaded', (e) => {
+                    console.log('Hub Ready:', e.detail);
+                });
+            </script>
+        </div>
+    </div>
+
+    <!-- SHARED FOOTER -->
+    <style>
+        .site-footer {
+            padding: 80px 5% 40px;
+            background: #fff;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+            max-width: 1400px;
+            margin: 0 auto 60px;
+        }
+
+        .footer-brand {
+            font-size: 24px;
+            font-weight: 800;
+            color: #111;
+            margin-bottom: 16px;
+        }
+
+        .footer-brand span {
+            color: #ccc;
+        }
+
+        .footer-about {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.7;
+            max-width: 300px;
+        }
+
+        .footer-heading {
+            font-size: 14px;
+            font-weight: 700;
+            color: #111;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #888;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #111;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-copyright {
+            font-size: 13px;
+            color: #aaa;
+        }
+    </style>
+    <div id="footer-placeholder"></div>
+    <script src="global.js"></script>
+
+</html>

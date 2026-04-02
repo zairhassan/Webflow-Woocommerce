@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refined Gear — AURA Premium</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --aura-theme: #F27D26;
+            --aura-bg: #111;
+        }
+
+        body {
+            background-color: #fbfbfb;
+            color: #1a1a1a;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .shop-header {
+            padding: 180px 5% 100px;
+            position: relative;
+            background: #111;
+            color: white;
+            text-align: center;
+        }
+
+        .bg-transition {
+            transition: background 1s ease-in-out, background-color 1.5s ease;
+        }
+
+        .shop-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 5%;
+        }
+
+
+        .nav-link { font-size: 14px; font-weight: 500; color: white; transition: opacity 0.3s; }
+        .nav-link:hover { opacity: 0.6; }
+        .nav-active { font-weight: 800; border-bottom: 2px solid white; }
+
+        @media (max-width: 991px) {
+            .product-card { grid-template-columns: 1fr; }
+            .card-info { padding: 40px; }
+            .card-title { font-size: 32px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Global Header -->
+    <div id="header-placeholder"></div>
+
+    <header class="shop-header">
+        <div id="dynamic-bg" class="absolute inset-0 z-0 bg-transition" style="background: radial-gradient(circle at 50% 50%, #111 0%, #000 100%)"></div>
+        <div class="relative z-10">
+            <span class="text-aura-theme text-sm font-bold tracking-[0.5em] uppercase mb-4 block">Essentials 02</span>
+            <h1 class="text-7xl md:text-9xl font-serif italic mb-6">Refined Gear</h1>
+            <p class="text-xl opacity-60 max-w-2xl mx-auto font-light">Elegance in everyday tech. Premium accessories for the modern aesthetic.</p>
+        </div>
+    </header>
+
+    <div class="shop-container">
+        <!-- Top Category Tabs (Centered) -->
+        <div class="shop-filters-top">
+            <div class="category-tabs">
+                <a href="shop.html" class="tab-btn">All Collections</a>
+                <a href="outerwear.html" class="tab-btn">Outerwear</a>
+                <a href="accessories.html" class="tab-btn active">Accessories</a>
+                <a href="essentials.html" class="tab-btn">Essentials</a>
+            </div>
+        </div>
+
+        <div class="shop-layout-wrapper">
+            <aside class="shop-sidebar" data-enabled-filters="all">
+                <div class="sidebar-section" data-filter-group="price">
+                    <span class="sidebar-title">Price Range</span>
+                    <div class="price-filter-wrap">
+                        <div class="price-input-group">
+                            <label>MIN</label>
+                            <input type="number" id="min-price" placeholder="0" onchange="applySidebarFilters()">
+                        </div>
+                        <div class="price-separator"></div>
+                        <div class="price-input-group">
+                            <label>MAX</label>
+                            <input type="number" id="max-price" placeholder="999+" onchange="applySidebarFilters()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section" data-filter-group="sort">
+                    <span class="sidebar-title">Sort By</span>
+                    <div class="sort-options">
+                        <label class="sort-radio">
+                            <input type="radio" name="shop-sort" value="newest" checked onchange="applySidebarFilters()">
+                            <span>New Arrivals</span>
+                        </label>
+                        <label class="sort-radio">
+                            <input type="radio" name="shop-sort" value="price-low" onchange="applySidebarFilters()">
+                            <span>Price: Low to High</span>
+                        </label>
+                        <label class="sort-radio">
+                            <input type="radio" name="shop-sort" value="price-high" onchange="applySidebarFilters()">
+                            <span>Price: High to Low</span>
+                        </label>
+                        <label class="sort-radio">
+                            <input type="radio" name="shop-sort" value="name" onchange="applySidebarFilters()">
+                            <span>Name: A-Z</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="sidebar-section" data-filter-group="color">
+                    <span class="sidebar-title">Color</span>
+                    <div class="filter-options-grid" id="color-filters">
+                        <div class="color-swatch" style="background: #000000" data-value="Black" title="Black" onclick="toggleAttributeFilter(this, 'color')"></div>
+                        <div class="color-swatch" style="background: #ffffff; border: 1px solid #ddd" data-value="White" title="White" onclick="toggleAttributeFilter(this, 'color')"></div>
+                        <div class="color-swatch" style="background: #7B61FF" data-value="Royal Purple" title="Royal Purple" onclick="toggleAttributeFilter(this, 'color')"></div>
+                        <div class="color-swatch" style="background: #F27D26" data-value="Bright Orange" title="Bright Orange" onclick="toggleAttributeFilter(this, 'color')"></div>
+                        <div class="color-swatch" style="background: #5A5A40" data-value="Olive Green" title="Olive Green" onclick="toggleAttributeFilter(this, 'color')"></div>
+                        <div class="color-swatch" style="background: #E53E3E" data-value="Red" title="Red" onclick="toggleAttributeFilter(this, 'color')"></div>
+                        <div class="color-swatch" style="background: #3182CE" data-value="Blue" title="Blue" onclick="toggleAttributeFilter(this, 'color')"></div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section" data-filter-group="size">
+                    <span class="sidebar-title">Size</span>
+                    <div class="filter-options-grid" id="size-filters">
+                        <div class="size-pill-filter" data-value="S" onclick="toggleAttributeFilter(this, 'size')">S</div>
+                        <div class="size-pill-filter" data-value="M" onclick="toggleAttributeFilter(this, 'size')">M</div>
+                        <div class="size-pill-filter" data-value="L" onclick="toggleAttributeFilter(this, 'size')">L</div>
+                        <div class="size-pill-filter" data-value="10" onclick="toggleAttributeFilter(this, 'size')">10</div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section" data-filter-group="availability">
+                    <span class="sidebar-title">Availability</span>
+                    <div class="availability-filters">
+                        <label class="filter-check-label">
+                            <input type="checkbox" id="filter-stock" onchange="applySidebarFilters()">
+                            <span>In Stock Only</span>
+                        </label>
+                        <label class="filter-check-label">
+                            <input type="checkbox" id="filter-sale" onchange="applySidebarFilters()">
+                            <span>On Sale</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button class="clear-filters-btn" onclick="clearFilters()">Reset Filters</button>
+            </aside>
+
+            <div class="shop-main-content">
+                <div class="shop-grid" data-commerce="product-list" data-category="accessories" data-limit="9">
+                    <template data-commerce="product-template">
+                        <div class="product-card" data-commerce="product-item" data-product-id="{{id}}">
+                            <div class="card-badge-wrap" data-field="badge"></div>
+                            <button class="wishlist-toggle-btn" data-commerce="wishlist-toggle">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.78-8.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                </svg>
+                            </button>
+                            <div class="card-image-wrap">
+                                <a href="product.html?slug={{slug}}" class="product-card-link" data-field="link">
+                                    <img src="{{imageUrl}}" alt="{{title}}" data-field="image">
+                                </a>
+                                <button class="quick-add-btn" data-commerce="add-to-cart">
+                                    <span>Quick Add</span>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="card-info">
+                                <span class="card-tag">AURA PREMIUM</span>
+                                <a href="product.html?slug={{slug}}" class="card-title-link" data-field="link">
+                                    <h3 class="card-title" data-field="title">{{title}}</h3>
+                                </a>
+                                <div class="card-price" data-field="price">
+                                    <span class="price-current">{{currency}}{{price}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+    <script src="global.js"></script>
+
+    <script id="ce-engine-script" src="../sdk/engine_v5_final.js" data-api-url="http://127.0.0.1:5001" data-store-key="pk_live_6bf90196f1ba428e8f1ff44fa3d506df"></script>
+    <script>
+        // Theme synchronization logic
+        (function() {
+            const THEMES = {
+                orange: { hex: '#F27D26', grad: 'radial-gradient(circle at 50% 50%, #F27D26 0%, #A34500 100%)' },
+                olive: { hex: '#5A5A40', grad: 'radial-gradient(circle at 50% 50%, #5A5A40 0%, #2A2A1A 100%)' },
+                purple: { hex: '#7B61FF', grad: 'radial-gradient(circle at 50% 50%, #7B61FF 0%, #3B217F 100%)' }
+            };
+
+            function updateTheme(colorKey) {
+                if (!THEMES[colorKey]) return;
+                const dynamicBg = document.getElementById('dynamic-bg');
+                if (dynamicBg) dynamicBg.style.background = THEMES[colorKey].grad;
+            }
+
+            try {
+                const savedTheme = localStorage.getItem('aura_active_theme_key');
+                if (savedTheme) updateTheme(savedTheme);
+            } catch (e) {}
+
+            window.addEventListener('scroll', () => {
+                const nav = document.getElementById('main-nav');
+                if (window.scrollY > 50) {
+                    nav.style.backgroundColor = 'rgba(0,0,0,0.8)';
+                    nav.style.paddingTop = '1rem';
+                    nav.style.paddingBottom = '1rem';
+                    nav.style.backdropFilter = 'blur(20px)';
+                } else {
+                    nav.style.backgroundColor = 'transparent';
+                    nav.style.paddingTop = '2rem';
+                    nav.style.paddingBottom = '2rem';
+                    nav.style.backdropFilter = 'none';
+                }
+
+            });
+
+        })();
+    </script>
+</body>
+</html>

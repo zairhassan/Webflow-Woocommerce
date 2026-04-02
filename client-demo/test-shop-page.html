@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDK Test | Unified Shop Page</title>
+    <!-- External Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,900;1,900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --aura-theme: #F27D26; /* Custom brand color */
+        }
+        body { margin: 0; padding: 0; background: #fff; }
+    </style>
+</head>
+<body>
+
+    <!--
+        UNIFIED SHOP PAGE ATTRIBUTE
+        This single attribute will render:
+        1. Premium Header (Title & Subtitle)
+        2. Responsive Sidebar (Filters & Sorting)
+        3. Product Grid (Dynamic Loading)
+    -->
+    <div data-commerce="shop-page" 
+         data-title="AURA BOUTIQUE" 
+         data-subtitle="Explore our curated collection of technical outerwear."
+         data-limit="12">
+        <!-- Content will be injected here automatically by the SDK -->
+    </div>
+
+    <!-- Commerce Engine SDK -->
+    <script id="ce-engine-script" 
+            src="../sdk/engine_v5_final.js" 
+            data-api-url="http://127.0.0.1:5001" 
+            data-store-key="pk_live_6bf90196f1ba428e8f1ff44fa3d506df">
+    </script>
+
+</body>
+</html>

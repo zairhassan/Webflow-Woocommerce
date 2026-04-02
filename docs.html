@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA Commerce Engine — Developer Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #ffffff;
+            --sidebar-bg: #f8f9fb;
+            --text: #1a1a2e;
+            --text-muted: #64748b;
+            --primary: #F27D26;
+            --primary-light: rgba(242, 125, 38, 0.08);
+            --border: #e8ecf1;
+            --code-bg: #f8f9fb;
+            --code-text: #c2410c;
+            --table-stripe: #f8fafc;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            position: fixed; top: 0; left: 0;
+            width: 260px; height: 100vh;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            overflow-y: auto; z-index: 100;
+        }
+        .sidebar-brand {
+            padding: 24px 20px 18px;
+            border-bottom: 1px solid var(--border);
+            position: sticky; top: 0;
+            background: var(--sidebar-bg); z-index: 10;
+        }
+        .sidebar-brand h1 { font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+        .sidebar-brand h1 .dot { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; }
+        .sidebar-brand p { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+        .sidebar-nav { padding: 12px 0; }
+        .sidebar-section { padding: 0 12px; margin-bottom: 4px; }
+        .sidebar-section-title {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em; color: var(--text-muted); padding: 12px 8px 4px;
+        }
+        .sidebar-link {
+            display: flex; align-items: center; gap: 8px;
+            padding: 7px 10px; border-radius: 7px;
+            color: var(--text); text-decoration: none;
+            font-size: 13px; font-weight: 500; transition: all 0.15s;
+        }
+        .sidebar-link:hover, .sidebar-link.active { background: var(--primary-light); color: var(--primary); }
+        .sidebar-link .icon { font-size: 14px; width: 18px; text-align: center; }
+
+        /* ── Main ── */
+        .main { margin-left: 260px; max-width: 820px; padding: 40px 48px 100px; }
+
+        /* ── Hero ── */
+        .hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border-radius: 14px; padding: 40px 36px; margin-bottom: 40px;
+            color: white; position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: -50%; right: -20%;
+            width: 400px; height: 400px; background: var(--primary);
+            border-radius: 50%; filter: blur(120px); opacity: 0.12;
+        }
+        .hero h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 6px; position: relative; }
+        .hero p { color: #94a3b8; font-size: 14px; position: relative; max-width: 500px; }
+        .hero .ver { display: inline-block; background: rgba(242,125,38,0.15); color: var(--primary); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-bottom: 12px; border: 1px solid rgba(242,125,38,0.25); }
+
+        /* ── Typography ── */
+        h2 {
+            font-size: 24px; font-weight: 800; letter-spacing: -0.02em;
+            margin-top: 56px; margin-bottom: 6px; padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+        h2:first-of-type { margin-top: 0; border-top: none; padding-top: 0; }
+        .section-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; }
+        h3 { font-size: 17px; font-weight: 700; margin-top: 32px; margin-bottom: 6px; }
+        p { margin-bottom: 12px; color: #374151; font-size: 14px; }
+
+        /* ── Callout ── */
+        .callout {
+            padding: 14px 18px; border-radius: 10px; margin: 16px 0;
+            font-size: 13px; line-height: 1.6; display: flex; gap: 10px;
+        }
+        .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+        .callout-info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+        .callout-important { background: var(--primary-light); border: 1px solid rgba(242,125,38,0.25); color: #9a3412; }
+        .callout-success { background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; }
+
+        /* ── Attribute Block ── */
+        .attr {
+            background: #fff; border: 1px solid var(--border);
+            border-radius: 10px; padding: 16px 20px; margin: 10px 0;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+        .attr-header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+        .attr-name {
+            font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600;
+            color: var(--primary); background: var(--primary-light);
+            padding: 3px 10px; border-radius: 5px; white-space: nowrap;
+        }
+        .attr-desc { font-size: 13px; color: #374151; line-height: 1.5; }
+
+        /* ── Inline Code ── */
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--code-bg); color: var(--code-text);
+            padding: 2px 6px; border-radius: 4px;
+            font-size: 12px; font-weight: 500; border: 1px solid #e2e8f0;
+        }
+
+        /* ── Tables ── */
+        table {
+            width: 100%; border-collapse: collapse; margin: 12px 0 22px;
+            font-size: 13px; border-radius: 8px; overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        thead th {
+            background: #f8fafc; font-weight: 700; text-align: left;
+            padding: 10px 14px; font-size: 10px; text-transform: uppercase;
+            letter-spacing: 0.06em; color: var(--text-muted); border-bottom: 2px solid var(--border);
+        }
+        tbody td { padding: 9px 14px; border-bottom: 1px solid #f1f5f9; vertical-align: top; font-size: 13px; }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:nth-child(even) { background: var(--table-stripe); }
+
+        /* ── Badges ── */
+        .badge {
+            display: inline-block; padding: 2px 7px; border-radius: 4px;
+            font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+        }
+        .badge-req { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+        .badge-opt { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+        .badge-global { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+        .badge-auto { background: #faf5ff; color: #7c3aed; border: 1px solid #ddd6fe; }
+        .badge-auth { background: #fefce8; color: #a16207; border: 1px solid #fef08a; }
+
+        hr { border: none; border-top: 1px solid var(--border); margin: 30px 0; }
+        html { scroll-behavior: smooth; }
+        .sidebar::-webkit-scrollbar { width: 3px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+        @media (max-width: 768px) { .sidebar { display: none; } .main { margin-left: 0; padding: 20px 16px 80px; } }
+    </style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <h1><span class="dot"></span> AURA Engine</h1>
+        <p>Integration Guide v3.0</p>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Getting Started</div>
+            <a href="#setup" class="sidebar-link"><span class="icon">⚡</span> Setup</a>
+            <a href="#how-it-works" class="sidebar-link"><span class="icon">💡</span> How It Works</a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Attributes</div>
+            <a href="#products" class="sidebar-link"><span class="icon">🛍</span> Products</a>
+            <a href="#product-detail" class="sidebar-link"><span class="icon">📦</span> Product Detail</a>
+            <a href="#cart" class="sidebar-link"><span class="icon">🛒</span> Cart</a>
+            <a href="#checkout" class="sidebar-link"><span class="icon">💳</span> Checkout</a>
+            <a href="#wishlist" class="sidebar-link"><span class="icon">❤️</span> Wishlist</a>
+            <a href="#filtering" class="sidebar-link"><span class="icon">🛡</span> Smart Filtering</a>
+            <a href="#search" class="sidebar-link"><span class="icon">🔍</span> Search</a>
+            <a href="#account" class="sidebar-link"><span class="icon">🆔</span> Customer Account</a>
+            <a href="#recent" class="sidebar-link"><span class="icon">🕐</span> Recently Viewed</a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Reference</div>
+            <a href="#events" class="sidebar-link"><span class="icon">⚡</span> Custom Events</a>
+            <a href="#css" class="sidebar-link"><span class="icon">🎨</span> CSS Classes</a>
+            <a href="#js-api" class="sidebar-link"><span class="icon">🔧</span> JavaScript API</a>
+            <a href="#endpoints" class="sidebar-link"><span class="icon">🔗</span> API Endpoints</a>
+        </div>
+    </nav>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+
+<div class="hero">
+    <span class="ver">ENGINE v3.0</span>
+    <h1>AURA Commerce Engine</h1>
+    <p>Drop-in e-commerce for any website. Use complete account dashboards or build custom with attributes — zero CSS required, zero HTML prescribed.</p>
+</div>
+
+<!-- ════════════════════════════════════ -->
+<h2 id="setup">⚡ Setup</h2>
+<p class="section-desc">Add this script <strong>once</strong> in your site-wide header or footer. It works on every page automatically.</p>
+
+<div class="attr">
+    <div class="attr-header">
+        <span class="attr-name">Script Tag</span>
+        <span class="badge badge-global">One-Time • Global</span>
+    </div>
+    <div class="attr-desc">Place anywhere in your template (header or footer). Engine auto-initializes on page load.</div>
+</div>
+
+<table>
+    <thead><tr><th>Parameter</th><th></th><th>Description</th><th>Default</th></tr></thead>
+    <tbody>
+        <tr><td><code>data-api-url</code></td><td><span class="badge badge-req">Required</span></td><td>Backend server URL</td><td><code>http://127.0.0.1:5001</code></td></tr>
+        <tr><td><code>data-store-key</code></td><td><span class="badge badge-req">Required</span></td><td>Your store public API key</td><td>—</td></tr>
+        <tr><td><code>data-currency</code></td><td><span class="badge badge-opt">Optional</span></td><td>Currency symbol</td><td><code>$</code></td></tr>
+    </tbody>
+</table>
+
+<div class="callout callout-important">
+    <span class="callout-icon">💡</span>
+    <div><strong>No per-page setup needed.</strong> One script in your global template covers all pages. The engine scans the DOM automatically.</div>
+</div>
+
+<!-- ════════════════════════════════════ -->
+<h2 id="how-it-works">💡 How It Works</h2>
+<p class="section-desc">The engine works through HTML attributes. You don't need specific elements — any element works.</p>
+
+<p>Just add the <code>data-commerce</code> attribute to <strong>any element</strong> on your page. The engine detects it and adds the functionality. You choose the HTML, you choose the styling. The engine only cares about the attribute.</p>
+
+<div class="callout callout-success">
+    <span class="callout-icon">✅</span>
+    <div><strong>Element-agnostic.</strong> Use a <code>&lt;div&gt;</code>, <code>&lt;button&gt;</code>, <code>&lt;a&gt;</code>, <code>&lt;span&gt;</code>, or anything else. The attribute works the same regardless of which HTML element you use.</div>
+</div>
+
+<p>Think of each <code>data-commerce</code> value as a <strong>function</strong>. Adding it to any element enables that function on that element. Like shortcode parameters — add what you need, skip what you don't.</p>
+
+<!-- ════════════════════════════════════ -->
+<h2 id="products">🛍 Product Listing</h2>
+<p class="section-desc">Displays a grid of products. Add filter options to control what shows.</p>
+
+<div class="attr">
+    <div class="attr-header">
+        <span class="attr-name">data-commerce="product-list"</span>
+    </div>
+    <div class="attr-desc">Container for a product grid. The engine fills it with products from your store. Place a <code>product-template</code> inside it.</div>
+</div>
+
+        <tr><td><code>data-sort="price-low"</code></td><td>Sort: <code>price-low</code> / <code>price-high</code> / <code>newest</code> / <code>name</code></td></tr>
+    </tbody>
+</table>
+
+<div class="callout callout-info">
+    <span class="callout-icon">💡</span>
+    <div><strong>Note:</strong> Detailed filtering attributes and sidebar controls are now grouped in the <a href="#filtering">Smart Filtering</a> section below.</div>
+</div>
+
+<div class="callout callout-info">
+    <span class="callout-icon">🔀</span>
+    <div><strong>Combine freely:</strong> <code>data-commerce="product-list" data-type="featured" data-category="sneakers" data-limit="3"</code> → 3 featured sneakers.</div>
+</div>
+
+<div class="attr">
+    <div class="attr-header">
+        <span class="attr-name">data-commerce="product-template"</span>
+    </div>
+    <div class="attr-desc">Place <strong>inside</strong> a <code>product-list</code>. This element gets cloned for each product. Use <code>data-field</code> attributes inside to fill product data. Use <code>&lt;template&gt;</code> tag or any hidden element.</div>
+</div>
+
+<h3>How the Template System Works</h3>
+<p>The template is the heart of product rendering. Here's exactly what happens step by step:</p>
+
+<table>
+    <thead><tr><th>Step</th><th>What the Engine Does</th></tr></thead>
+    <tbody>
+        <tr><td><strong>1. Discover</strong></td><td>Engine scans the page for any element with <code>data-commerce="product-list"</code></td></tr>
+        <tr><td><strong>2. Read Filters</strong></td><td>Reads <code>data-type</code>, <code>data-category</code>, <code>data-limit</code> from the container to build the API query</td></tr>
+        <tr><td><strong>3. Fetch</strong></td><td>Calls the API: <code>GET /api/v1/public/products?category=outerwear&featured=true&limit=4</code></td></tr>
+        <tr><td><strong>4. Find Template</strong></td><td>Looks for a child element with <code>data-commerce="product-template"</code> inside the container</td></tr>
+        <tr><td><strong>5. Clone</strong></td><td>For <strong>each product</strong> returned by the API, clones (duplicates) the template element</td></tr>
+        <tr><td><strong>6. Fill Fields</strong></td><td>Inside each clone, finds all <code>data-field</code> elements and fills them with the product's data</td></tr>
+        <tr><td><strong>7. Set ID</strong></td><td>Sets <code>data-product-id</code> on the clone so cart/wishlist buttons know which product they belong to</td></tr>
+        <tr><td><strong>8. Bind</strong></td><td>Binds click handlers on any <code>add-to-cart</code> or <code>wishlist-toggle</code> elements inside the clone</td></tr>
+        <tr><td><strong>9. Append</strong></td><td>Adds the filled clone to the container. The original template stays hidden.</td></tr>
+    </tbody>
+</table>
+
+<div class="callout callout-important">
+    <span class="callout-icon">💡</span>
+    <div><strong>Your template = your design.</strong> The engine never creates HTML structure. It only fills <code>data-field</code> elements that YOU already placed inside your template. Whatever you design is what gets repeated for each product.</div>
+</div>
+
+<h3>Advanced: Mustache Syntax ({{ }})</h3>
+<p>In addition to <code>data-field</code>, Engine v3 supports <strong>Mustache-style placeholders</strong> inside templates. This is mandatory for attributes like <code>href</code> or <code>src</code> where you need dynamic IDs or URL fragments.</p>
+
+<table>
+    <thead><tr><th>Placeholder</th><th>Effect</th></tr></thead>
+    <tbody>
+        <tr><td><code>{{title}}</code></td><td>Renders product title</td></tr>
+        <tr><td><code>{{price}}</code></td><td>Renders product price (numeric)</td></tr>
+        <tr><td><code>{{currency}}</code></td><td>Renders store currency symbol</td></tr>
+        <tr><td><code>{{imageUrl}}</code></td><td>Renders product main image URL</td></tr>
+        <tr><td><code>{{slug}}</code></td><td>Renders product URL slug</td></tr>
+        <tr><td><code>{{id}}</code></td><td>Renders product unique database ID</td></tr>
+        <tr><td><code>{{description}}</code></td><td>Renders raw HTML description</td></tr>
+    </tbody>
+</table>
+
+<div class="callout callout-info">
+    <span class="callout-icon">🚀</span>
+    <div><strong>Pro Tip:</strong> Use <code>{{slug}}</code> inside links: <code>&lt;a href="product.html?slug={{slug}}"&gt;</code>. Standard <code>data-field</code> cannot modify partial URL attributes, but placeholders can!</div>
+</div>
+
+<h3>What You Can Put Inside a Template</h3>
+<p>Use <code>data-field</code> for display data and <code>data-commerce</code> for interactive actions. The engine fills and binds everything automatically per product.</p>
+
+<table>
+    <thead><tr><th>You Put This</th><th>Engine Does This</th></tr></thead>
+    <tbody>
+        <tr><td colspan="2" style="background:#f0f7ff; font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:#2563eb;">Display Fields</td></tr>
+        <tr><td><code>data-field="title"</code></td><td>Sets text to product name</td></tr>
+        <tr><td><code>data-field="price"</code></td><td>Shows price (with sale markup if on sale)</td></tr>
+        <tr><td><code>data-field="image"</code></td><td>Sets <code>src</code> on <code>&lt;img&gt;</code>, or <code>background-image</code> on other elements</td></tr>
+        <tr><td><code>data-field="link"</code></td><td>Sets <code>href</code> to product page URL</td></tr>
+        <tr><td><code>data-field="description"</code></td><td>Product description (HTML)</td></tr>
+        <tr><td><code>data-field="short-description"</code></td><td>Short version (auto-truncates to 150 chars if needed)</td></tr>
+        <tr><td><code>data-field="long-description"</code></td><td>Full detailed description</td></tr>
+        <tr><td><code>data-field="badge"</code></td><td>Default: auto (SALE / Featured / Sold Out). Add <code>data-badge-type="category"</code> to show category. Add <code>data-badge-type="custom" data-badge-text="New"</code> for custom text</td></tr>
+        <tr><td><code>data-field="rating"</code></td><td>Star rating ★★★★☆ + review count</td></tr>
+        <tr><td><code>data-field="category"</code></td><td>Category name(s)</td></tr>
+        <tr><td><code>data-field="stock-status"</code></td><td>"In Stock" / "Out of Stock"</td></tr>
+        <tr><td><code>data-field="sku"</code></td><td>Product SKU</td></tr>
+        <tr><td><code>data-field="gallery"</code></td><td>All product images</td></tr>
+        <tr><td colspan="2" style="background:#f0fdf4; font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:#16a34a;">Action Attributes</td></tr>
+        <tr><td><code>data-commerce="add-to-cart"</code></td><td>Clicking adds <strong>this product</strong> to cart. Add <code>data-qty-id="[ID]"</code> to link a specific input.</td></tr>
+        <tr><td><code>data-commerce="wishlist-toggle"</code></td><td>Clicking adds/removes from wishlist. Add <code>data-product-id</code> on self or parent if outside template.</td></tr>
+        <tr><td><code>data-commerce="quantity-input"</code></td><td>Number input for quantity (default: 1)</td></tr>
+        <tr><td><code>data-commerce="variant-selector"</code></td><td>Renders all variant options (Color, Size, etc.)</td></tr>
+    </tbody>
+</table>
+
+<div class="attr">
+    <div class="attr-header">
+        <span class="attr-name">data-commerce="product-filter"</span>
+        <span class="badge badge-opt">New in v3.0</span>
+    </div>
+    <div class="attr-desc">Generates a <strong>complete filter panel</strong> with category tabs, price range, sort dropdown, and product count. Place above your <code>product-list</code>. Automatically controls the product list on the same page.</div>
+</div>
+
+<table>
+    <thead><tr><th>Option</th><th>Default</th><th>Effect</th></tr></thead>
+    <tbody>
+        <tr><td><code>data-layout="horizontal"</code></td><td><code>horizontal</code></td><td>Inline bar — category tabs, price, sort, count in a row</td></tr>
+        <tr><td><code>data-layout="vertical"</code></td><td></td><td>Sidebar style — stacked vertically with labels</td></tr>
+        <tr><td><code>data-category="false"</code></td><td><code>true</code></td><td>Hides category tabs</td></tr>
+        <tr><td><code>data-price="false"</code></td><td><code>true</code></td><td>Hides price range filter</td></tr>
+        <tr><td><code>data-sort="false"</code></td><td><code>true</code></td><td>Hides sort dropdown</td></tr>
+    </tbody>
+</table>
+
+<div class="callout callout-info">
+    <span class="callout-icon">🔢</span>
+    <div><strong>Product count is always shown.</strong> It updates automatically when filters change. No separate <code>result-count</code> attribute needed.</div>
+</div>
+
+<div class="attr">
+    <div class="attr-header">
+        <span class="attr-name">data-commerce="category-filter"</span>
+        <span class="badge badge-opt">Legacy</span>
+    </div>
+    <div class="attr-desc">Simple category-only tabs. Use <code>product-filter</code> instead for the full filter panel. This still works for backward compatibility.</div>
+</div>
+
+<!-- ════════════════════════════════════ -->
+<h2 id="filtering">🛡 Smart Filtering System</h2>
+<p class="section-desc">The industry's most advanced attribute-based filtering. Control everything from visibility to variant syncing in one place.</p>
+
+<h3>1. Listing & Query Attributes</h3>
+<p>Add these to your <code>product-list</code> container to control the initial products shown.</p>
+
+<table>
+    <thead><tr><th>Attribute</th><th>Effect</th><th>Example</th></tr></thead>
+    <tbody>
+        <tr><td><code>data-category</code></td><td>Filter by category slug</td><td><code>"outerwear"</code></td></tr>
+        <tr><td><code>data-type</code></td><td>Filter by status</td><td><code>"featured"</code>, <code>"sale"</code>, <code>"related"</code></td></tr>
+        <tr><td><code>data-limit</code></td><td>Maximum products to show</td><td><code>"8"</code></td></tr>
+        <tr><td><code>data-min-price</code></td><td>Minimum price threshold</td><td><code>"50"</code></td></tr>
+        <tr><td><code>data-max-price</code></td><td>Maximum price threshold</td><td><code>"500"</code></td></tr>
+        <tr><td><code>data-sort</code></td><td>Sorting order</td><td><code>"price-low"</code>, <code>"newest"</code>, <code>"name"</code></td></tr>
+    </tbody>
+</table>
+
+<h3>2. Sidebar Master Switch</h3>
+<p>Control which filter groups (Color, Size, Price, etc.) are visible to the user. Perfect for Webflow integrations.</p>
+
+<div class="attr">
+    <div class="attr-header">
+        <span class="attr-name">data-enabled-filters</span>
+        <span class="badge badge-opt">New in v5.0</span>
+    </div>
+    <div class="attr-desc">Add to your <code>.shop-sidebar</code> container. Use <code>"all"</code> or a comma-separated list like <code>"color,size"</code>.</div>
+</div>
+
+<div class="callout callout-info">
+    <span class="callout-icon">💡</span>
+    <div><strong>Technical Note:</strong> Sidebar sections must have <code>data-filter-group="[name]"</code> to be controlled by this switch. Supported names: <code>price</code>, <code>sort</code>, <code>color</code>, <code>size</code>, <code>availability</code>.</div>
+</div>
+
+<h3>3. Variant Image Auto-Sync</h3>
+<p>The engine automatically synchronizes product visuals with the user's selected filters.</p>
+
+<div class="attr">
+    <div class="attr-header">
+        <span class="attr-name">Variant Logic</span>
+        <span class="badge badge-auto">Always Active</span>
+    </div>
+    <div class="attr-desc">When a user selects a filter (e.g., "Purple"), the engine finds the matching variant and swaps the card image/price instantly.</div>
+</div>
+
+<div class="callout callout-success">
+    <span class="callout-icon">✨</span>
+    <div><strong>Zero Code Sync:</strong> No JavaScript required. As long as your variants have images in the backend, the engine handles the swap across all collection pages.</div>
+</div>
+
+<h3>4. Product Detail Components</h3>
+<p>Use these inside <code>product-detail</code> to allow users to select specific variants.</p>
+
+<table>
+    <thead><tr><th>Attribute</th><th>Effect</th></tr></thead>
+    <tbody>
+        <tr><td><code>data-commerce="variant-selector"</code></td><td>Shows all variant groups (Color, Size) together</td></tr>
+        <tr><td><code>data-commerce="variant-options"</code></td><td>Shows a specific group. Link with <code>data-attribute="Color"</code></td></tr>
+    </tbody>
+</table>
+
+<!-- ════════════════════════════════════ -->
+<h2 id="product-detail">📦 Product Detail</h2>
+<p class="section-desc">Single product page. Auto-detects the product from the URL (<code>?slug=</code>). Everything inside is auto-filled and auto-bound to that product.</p>
+
+<div class="attr">
+    <div class="attr-header">
+        <span class="attr-name">data-commerce="product-detail"</span>
+    </div>
+    <div class="attr-desc">Container for a single product page. Engine fetches the product, fills all <code>data-field</code> elements, binds actions, and sets <code>data-product-id</code> automatically.</div>
+</div>
+
+<h3>Slug Detection Priority</h3>
+<table>
+    <thead><tr><th>#</th><th>Source</th><th>Example</th></tr></thead>
+    <tbody>
+        <tr><td>1</td><td><code>data-product-slug</code> or <code>data-slug</code></td><td><code>data-product-slug="aura-puffer-jacket"</code></td></tr>
+        <tr><td>2</td><td>URL query parameter</td><td><code>?slug=aura-puffer-jacket</code></td></tr>
+        <tr><td>3</td><td>URL hash</td><td><code>#aura-puffer-jacket</code></td></tr>
+        <tr><td>4</td><td>Last URL path segment</td><td><code>/products/aura-puffer-jacket</code></td></tr>
+    </tbody>
+</table>
+
+<h3>What You Can Put Inside <code>product-detail</code></h3>
+<p>Same fields and actions as <code>product-template</code> — engine fills and binds everything automatically.</p>
+
+<table>
+    <thead><tr><th>You Put This</th><th>Engine Does This</th></tr></thead>
+    <tbody>
+        <tr><td colspan="2" style="background:#f0f7ff; font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:#2563eb;">Display Fields</td></tr>
+        <tr><td><code>data-field="title"</code></td><td>Product name</td></tr>
+        <tr><td><code>data-field="price"</code></td><td>Price (with sale markup if on sale)</td></tr>
+        <tr><td><code>data-field="image"</code></td><td>Main product image</td></tr>
+        <tr><td><code>data-field="gallery"</code></td><td>All product images</td></tr>
+        <tr><td><code>data-field="description"</code></td><td>Product description (HTML)</td></tr>
+        <tr><td><code>data-field="short-description"</code></td><td>Short version (auto-truncates to 150 chars)</td></tr>
+        <tr><td><code>data-field="long-description"</code></td><td>Full detailed description</td></tr>
+        <tr><td><code>data-field="badge"</code></td><td>Default: auto (SALE / Featured / Sold Out). Add <code>data-badge-type="category"</code> or <code>data-badge-type="custom" data-badge-text="New"</code></td></tr>
+        <tr><td><code>data-field="rating"</code></td><td>★★★★☆ + review count</td></tr>
+        <tr><td><code>data-field="category"</code></td><td>Category name(s)</td></tr>
+        <tr><td><code>data-field="stock-status"</code></td><td>"In Stock" / "Out of Stock"</td></tr>
+        <tr><td><code>data-field="sku"</code></td><td>Product SKU</td></tr>
+        <tr><td colspan="2" style="background:#f0fdf4; font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:#16a34a;">Actions & Interactivity</td></tr>
+        <tr><td><code>data-commerce="add-to-cart"</code></td><td>Adds <strong>this product</strong> to cart</td></tr>
+        <tr><td><code>data-commerce="wishlist-toggle"</code></td><td>Adds/removes from wishlist</td></tr>
+        <tr><td><code>data-commerce="quantity-input"</code></td><td>Quantity input (default: 1)</td></tr>
+        <tr><td><code>data-commerce="variant-selector"</code></td><td>Renders <strong>all</strong> variant groups (Color + Size together)</td></tr>
+        <tr><td><code>data-commerce="variant-options"</code></td><td>Renders <strong>one</strong> variant group. Add <code>data-attribute="Color"</code> to pick which</td></tr>
+        <tr><td><code>data-commerce="reviews"</code></td><td>Product reviews section</td></tr>
+    </tbody>
+</table>
+
+<div class="callout callout-info">
+    <span class="callout-icon">👁️</span>
+    <div><strong>Auto-tracking:</strong> Whenever a <code>product-detail</code> page loads, the engine automatically records that product in "recently viewed". No extra setup needed.</div>
+</div>
+
+
+<!-- ════════════════════════════════════ -->
+<h2 id="cart">🛒 Cart</h2>
+<p class="section-desc">Shopping cart — sidebar panel, full cart page, and individual elements for custom layouts.</p>
+
+<h3>Cart Sidebar</h3>
+<p>Slide-in panel from the right. Engine generates it automatically — you just trigger it.</p>
+
+<div class="attr">
+    <div class="attr-header">
+        <span class="attr-name">data-commerce="cart-toggle"</span>
+    </div>
+    <div class="attr-desc">Clicking this element opens/closes the cart sidebar. Add <code>data-show-count="true"</code> to auto-inject an item count badge (styled by <code>.wfc-auto-count</code>).</div>
+</div>
+
+<div class="attr">
+    <div class="attr-header">
+        <span class="attr-name">data-commerce="cart-sidebar"</span>
+        <span class="badge badge-opt">Optional</span>
+    </div>
+    <div class="attr-desc">Place an empty div with this attribute to control the sidebar. If not present, engine auto-generates it. Use <code>data-skin</code> to pick a design.</div>
+</div>
+
+<table>
+    <thead><tr><th>Option</th><th>Default</th><th>Effect</th></tr></thead>
+    <tbody>
+        <tr><td><code>data-skin</code></td><td><code>default</code></td><td>Sidebar design skin. Future skins: <code>2</code>, <code>3</code>, <code>4</code></td></tr>
+    </tbody>
+</table>
+
+<div class="callout callout-info">
+    <span class="callout-icon">🎨</span>
+    <div><strong>CSS Customization:</strong> Override <code>.wfc-sidebar</code>, <code>.wfc-sidebar-item</code>, <code>.wfc-sidebar-checkout</code> etc. to match your branding. No HTML changes needed.</div>
+</div>
+
+<h3>Cart Page</h3>
+<p>Full-page cart view. One attribute = complete cart page with items, coupon, totals, and checkout button.</p>
+
+<div class="attr">
+    <div class="attr-header">
+        <span class="attr-name">data-commerce="cart-page"</span>
+    </div>
+    <div class="attr-desc">Renders a complete shopping cart page. Place on your <code>cart.html</code> page. Synonym: <code>cart-ui</code>.</div>
+</div>
+
+<table>
+    <thead><tr><th>Option</th><th>Default</th><th>Effect</th></tr></thead>
+    <tbody>
+        <tr><td><code>data-skin</code></td><td><code>default</code></td><td>Cart page design skin. Future skins: <code>2</code>, <code>3</code>, <code>4</code></td></tr>
+        <tr><td><code>data-style</code></td><td><code>full</code></td><td><code>full</code> (wide) or <code>compact</code> (narrow centered)</td></tr>
+    </tbody>
+</table>
+
+<h3>Individual Cart Elements</h3>
+<p>For <strong>custom cart layouts</strong> — use these if you want to design your own cart page instead of using <code>cart-page</code>.</p>
+
+<table>
+    <thead><tr><th>Attribute</th><th>What It Does</th></tr></thead>
+    <tbody>
+        <tr><td><code>data-commerce="cart-count"</code></td><td>Shows item count. Auto-updates.</td></tr>
+        <tr><td><code>data-commerce="add-to-cart"</code></td><td>Adds product to cart. Needs <code>data-product-id</code> on itself or parent. Link to quantity input with <code>data-qty-id="[ID]"</code>.</td></tr>
+        <tr><td><code>data-commerce="cart-items"</code></td><td>Renders full item list (images, qty, remove buttons)</td></tr>
+        <tr><td><code>data-commerce="cart-subtotal"</code></td><td>Subtotal (before discount)</td></tr>
+        <tr><td><code>data-commerce="cart-discount"</code></td><td>Discount amount</td></tr>
+        <tr><td><code>data-commerce="cart-total"</code></td><td>Final total after discount</td></tr>
+        <tr><td><code>data-commerce="checkout-btn"</code></td><td>Redirects to checkout page</td></tr>
+    </tbody>
+</table>
+
+<!-- ════════════════════════════════════ -->
+<h2 id="checkout">💳 Checkout</h2>
+<p class="section-desc">Order placement — plug & play checkout page or assemble your own layout with modular blocks.</p>
+
+<h3>Checkout Page (Plug & Play)</h3>
+<p>One attribute = complete checkout with personal details, payment, order summary, and submit button.</p>
+
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="checkout-page"</span></div>
+    <div class="attr-desc">Renders a full checkout page. Place on your <code>checkout.html</code> page. Synonym: <code>checkout-ui</code>.</div>
+</div>
+
+<table>
+    <thead><tr><th>Option</th><th>Default</th><th>Effect</th></tr></thead>
+    <tbody>
+        <tr><td><code>data-skin</code></td><td><code>default</code></td><td>Checkout design skin. Future skins: <code>2</code>, <code>3</code>, <code>4</code></td></tr>
+        <tr><td><code>data-style</code></td><td><code>split</code></td><td>Layout style: <code>split</code> / <code>stacked</code> / <code>multi-step</code> <span class="badge badge-opt">New</span></td></tr>
+    </tbody>
+</table>
+
+<h3>Custom Checkout (Modular Blocks)</h3>
+<p>Design your own checkout layout. Wrap all blocks in a parent <code>data-commerce="checkout"</code> div. Place blocks anywhere you want — the engine fills them.</p>
+
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="checkout-contact"</span></div>
+    <div class="attr-desc">Renders email and a "Create account" checkbox — when ticked, an optional password field appears.</div>
+</div>
+
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="checkout-delivery"</span></div>
+    <div class="attr-desc">Renders shipping fields: name, address, city, postal code, country. Phone, company name, and order notes can be toggled via attributes.</div>
+</div>
+
+<h4>Delivery Toggle Options</h4>
+<table>
+    <thead><tr><th>Option</th><th>Default</th><th>Effect</th></tr></thead>
+    <tbody>
+        <tr><td><code>data-phone="false"</code></td><td><code>true</code></td><td>Hides the phone number input</td></tr>
+        <tr><td><code>data-company="true"</code></td><td><code>false</code></td><td>Shows an optional Company Name input</td></tr>
+        <tr><td><code>data-notes="false"</code></td><td><code>true</code></td><td>Hides the Order Notes textarea</td></tr>
+    </tbody>
+</table>
+
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="checkout-payment"</span></div>
+    <div class="attr-desc">Renders payment method selection: Cash on Delivery or Card. If card is selected, Stripe card element auto-mounts.</div>
+</div>
+
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="checkout-summary"</span></div>
+    <div class="attr-desc">Renders order summary: items list, subtotal, discount, total, coupon input, and submit button.</div>
+</div>
+
+<h4>Summary Toggle Options</h4>
+<p>By default everything shows. Set any option to <code>"false"</code> to hide that part:</p>
+<table>
+    <thead><tr><th>Option</th><th>Default</th><th>What it hides</th></tr></thead>
+    <tbody>
+        <tr><td><code>data-items="false"</code></td><td><code>true</code></td><td>Product list</td></tr>
+        <tr><td><code>data-subtotal="false"</code></td><td><code>true</code></td><td>Subtotal row</td></tr>
+        <tr><td><code>data-discount="false"</code></td><td><code>true</code></td><td>Discount row</td></tr>
+        <tr><td><code>data-coupon="false"</code></td><td><code>true</code></td><td>Coupon input</td></tr>
+    </tbody>
+</table>
+
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="checkout-submit"</span></div>
+    <div class="attr-desc">Triggers the checkout process. Engine reads all form inputs, validates, and submits the order. Included automatically in <code>checkout-summary</code>, but you can also place it separately.</div>
+</div>
+
+<div class="callout callout-info">
+    <span class="callout-icon">💡</span>
+    <div><strong>CSS is 100% yours.</strong> Override <code>.wfc-checkout-*</code>, <code>.wfc-form-*</code>, <code>.wfc-payment-*</code> classes to match your branding. The engine only cares about the data attributes — not how the form looks.</div>
+</div>
+
+<!-- ════════════════════════════════════ -->
+<h2 id="wishlist">❤️ Wishlist</h2>
+<p class="section-desc">Save products for later. Works for both guests (localStorage) and logged-in users (database).</p>
+
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="wishlist-toggle"</span></div>
+    <div class="attr-desc">Clicking adds/removes the product from the wishlist. Needs <code>data-product-id</code> on itself or a parent.</div>
+</div>
+
+<h3>Behavior</h3>
+<table>
+    <thead><tr><th>State</th><th>What Happens</th></tr></thead>
+    <tbody>
+        <tr><td>Guest</td><td>Items saved in <code>localStorage</code></td></tr>
+        <tr><td>Logged In</td><td>Items saved to database via API</td></tr>
+        <tr><td>CSS Class</td><td><code>.wfc-wishlisted</code> toggled on the element when active</td></tr>
+        <tr><td>Toast</td><td>"Added to wishlist" / "Removed from wishlist"</td></tr>
+    </tbody>
+</table>
+
+<h3>Wishlist Page</h3>
+<p>You don't need to write any custom logic to show the wishlist. Simply use the plug & play attribute:</p>
+
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="wishlist-page"</span></div>
+    <div class="attr-desc">Automatically fetches and displays the user's saved items in a grid. Works seamlessly for both guest and logged-in users.</div>
+</div>
+
+<table>
+    <thead><tr><th>Option</th><th>Default</th><th>Effect</th></tr></thead>
+    <tbody>
+        <tr><td><code>data-skin</code></td><td><code>default</code></td><td>Wishlist design skin. Future skins: <code>2</code>, <code>3</code>, <code>4</code></td></tr>
+    </tbody>
+</table>
+
+<h4>Custom Wishlist Layout</h4>
+<p>If you don't want the default grid, you can design your own card inside the container. The engine will use it as a template and clone it for every product in the wishlist.</p>
+
+<ol>
+    <li>Place a single div with <code>data-commerce="wishlist-item"</code> inside your wishlist page container.</li>
+    <li>Inside it, design your card and tag the elements:
+        <ul>
+            <li><code>data-commerce="wishlist-item-image"</code> on an `img`</li>
+            <li><code>data-commerce="wishlist-item-name"</code> on a text element</li>
+            <li><code>data-commerce="wishlist-item-price"</code> on a text element</li>
+            <li><code>data-commerce="wishlist-item-link"</code> on the parent `a` tag (if you want it to wrap the image/title)</li>
+            <li><code>data-commerce="wishlist-toggle"</code> on your remove button</li>
+        </ul>
+    </li>
+</ol>
+<p>The engine will automatically grab your design, clear it, and regenerate the list using your custom styling!</p>
+
+<div class="callout callout-info">
+    <span class="callout-icon">💡</span>
+    <div><strong>Custom APIs:</strong> If you want to build a completely custom design from scratch, you can still fetch wishlist data via JS: `engine.api('/customer/wishlist')` (Logged In) or `engine.api('/public/products?ids=' + engine.getWishlist().join(','))` (Guest).</div>
+</div>
+
+<!-- ════════════════════════════════════ -->
+<h2 id="auth">👤 Authentication</h2>
+<p class="section-desc">Login, register, logout, and conditional visibility.</p>
+
+<h3>Fast Auth (Modal & Redirect)</h3>
+<p>Open a login/register popup or redirect to a custom page instantly. <strong>Note:</strong> These hide automatically when the user is already logged in.</p>
+
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="customer-login"</span></div>
+    <div class="attr-desc">Clicking opens the default login/register modal.</div>
+</div>
+
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="customer-login-page"</span></div>
+    <div class="attr-desc">Clicking redirects to a custom login page. Usage: <code>&lt;a href="/login" data-commerce="customer-login-page"&gt;</code>. It automatically adds a <code>?redirect=</code> param so the user returns to the current page after login.</div>
+</div>
+
+<h3>Custom Auth Pages (Inline Forms)</h3>
+<p>If you want to design your own "Login" or "Register" pages, use these plug-and-play forms. They generate complete, functional forms automatically.</p>
+
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="login-form"</span></div>
+    <div class="attr-desc">Renders a complete login form with email, password, and forgot password link.</div>
+</div>
+
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="register-form"</span></div>
+    <div class="attr-desc">Renders a registration form with full name, email, and password.</div>
+</div>
+
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="forgot-password-form"</span></div>
+    <div class="attr-desc">Renders a "Forgot Password" form to send reset links.</div>
+</div>
+
+<table>
+    <thead><tr><th>Option</th><th>Default</th><th>Effect</th></tr></thead>
+    <tbody>
+        <tr><td><code>data-skin</code></td><td><code>default</code></td><td>Form design skin.</td></tr>
+        <tr><td><code>data-redirect</code></td><td><code>/my-account</code></td><td>Page to redirect to after successful login/registration.</td></tr>
+    </tbody>
+</table>
+
+<h3>Control Visibility</h3>
+<p>Show or hide elements based on user state:</p>
+
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="account-link"</span></div>
+    <div class="attr-desc">Visible only when logged in. Use with an <code>href</code> to link to the account page. <strong>Note:</strong> Hides automatically when logged out.</div>
+</div>
+
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="customer-logout"</span></div>
+    <div class="attr-desc">Clicking logs out the customer and resets the UI. <strong>Note:</strong> Hides automatically when logged out.</div>
+</div>
+
+<div class="callout callout-info">
+    <span class="callout-icon">💡</span>
+    <div><strong>Smart Buttons:</strong> <code>customer-login</code>, <code>customer-login-page</code>, <code>account-link</code>, and <code>customer-logout</code> all have built-in "Smart Visibility". You don't need to wrap them in <code>guest-only</code> or <code>auth-only</code> blocks — the engine handles the logic for you!</div>
+</div>
+
+<h3>Manual Visibility Control</h3>
+<p>For custom sections (like a "Welcome Guest" banner), use these attributes:</p>
+
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="guest-only"</span></div>
+    <div class="attr-desc">This element is <strong>visible only when NOT logged in</strong>. Hidden as soon as a customer is authenticated.</div>
+</div>
+
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="auth-only"</span></div>
+    <div class="attr-desc">This element is <strong>visible only when logged in</strong>. Hidden when no customer is authenticated.</div>
+</div>
+
+<!-- ════════════════════════════════════ -->
+<h2 id="search">🔍 Search</h2>
+<p class="section-desc">Instant product search with dropdown results.</p>
+
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="search"</span></div>
+    <div class="attr-desc">Put on any container element. Engine auto-generates a search input and results dropdown inside it. Minimum 2 characters to trigger search. Clicking a result navigates to the product page.</div>
+</div>
+
+<div class="callout callout-info">
+    <span class="callout-icon">💡</span>
+    <div>If you already have an <code>&lt;input&gt;</code> inside the container, the engine uses yours instead of creating one. This lets you control the input's styling.</div>
+</div>
+
+<!-- ════════════════════════════════════ -->
+<h2 id="account">🆔 Customer Account</h2>
+<p class="section-desc">Create a full dashboard instantly, or build a custom layout with modular blocks.</p>
+
+<h3>Option 1: Customer Account</h3>
+<p>One attribute renders a complete, tabbed dashboard UI with Sidebar, Profile, Orders, and Addresses.</p>
+
+<div class="attr">
+    <div class="attr-header">
+        <span class="attr-name">data-commerce="account-page"</span>
+        <span class="badge badge-opt">New in v3.0</span>
+    </div>
+    <div class="attr-desc">Renders a modernized dashboard. Supports <code>data-skin</code> and <code>data-tab</code> (e.g., <code>data-tab="orders"</code>) to focus on one view. Synonym: <code>account-ui</code>.</div>
+</div>
+
+<h3>Option 2: Modular Dashboard</h3>
+<p>Use these attributes to design your own layout directly in Webflow. The engine will populate your elements with dynamic data.</p>
+
+<h3>Step 1: Profile & Stats</h3>
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="account-profile"</span></div>
+    <div class="attr-desc">Container that auto-fills customer data. Inside, use: <code>data-field="customer-name"</code>, <code>data-field="customer-email"</code>, <code>data-field="customer-phone"</code>, <code>data-field="customer-initial"</code>.</div>
+</div>
+
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="account-stats"</span></div>
+    <div class="attr-desc">Shows counts: <code>data-stat="orders-count"</code>, <code>data-stat="addresses-count"</code>, <code>data-stat="wishlist-count"</code>.</div>
+</div>
+
+<h3>Step 2: Order History (Loop)</h3>
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="account-orders"</span></div>
+    <div class="attr-desc">The list container. It clones the internal template for every order.</div>
+</div>
+
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="order-item"</span></div>
+    <div class="attr-desc">The template card inside the orders list. Use these fields: <code>{{shortId}}</code>, <code>{{date}}</code>, <code>{{status}}</code>, <code>{{total}}</code>.</div>
+</div>
+
+<h3>Step 3: Address Management</h3>
+<div class="attr">
+    <div class="attr-header"><span class="attr-name">data-commerce="account-addresses"</span></div>
+    <div class="attr-desc">List container for addresses. Clones <code>data-commerce="address-item"</code>. Use fields: <code>data-address-field="label"</code>, <code>street</code>, <code>city</code>.</div>
+</div>
+
+<div class="callout callout-important">
+    <span class="callout-icon">🔒</span>
+    <div><strong>Auto-Redirect:</strong> Any page containing these attributes automatically redirects unauthorized guests to the <code>/login</code> page.</div>
+</div>
+
+<!-- ════════════════════════════════════ -->
+<h2 id="recent">🕐 Recently Viewed Products</h2>
+<p class="section-desc">Auto-tracks viewed products and renders them anywhere on your site.</p>
+
+<div class="attr">
+    <div class="attr-header">
+        <span class="attr-name">data-commerce="recent-products"</span>
+        <span class="badge badge-opt">New in v3.0</span>
+    </div>
+    <div class="attr-desc">Container that shows products the user has viewed. Place a <code>product-template</code> inside, just like <code>product-list</code>. Hides automatically if no products viewed.</div>
+</div>
+
+<table>
+    <thead><tr><th>Option</th><th>Default</th><th>Effect</th></tr></thead>
+    <tbody>
+        <tr><td><code>data-limit</code></td><td><code>4</code></td><td>Max products to show</td></tr>
+    </tbody>
+</table>
+
+<div class="callout callout-info">
+    <span class="callout-icon">💡</span>
+    <div><strong>Auto-tracking:</strong> Whenever a <code>product-detail</code> page loads, the engine automatically records that product. No extra setup needed.</div>
+</div>
+
+
+<!-- ════════════════════════════════════ -->
+
+<!-- ════════════════════════════════════ -->
+<h2 id="events">⚡ Custom JavaScript Events</h2>
+<p class="section-desc">The engine dispatches events you can listen to for unlimited interactivity. All events use the <code>wfc:</code> prefix.</p>
+
+<table>
+    <thead><tr><th>Event Name</th><th>When Fired</th><th><code>event.detail</code> Contains</th></tr></thead>
+    <tbody>
+        <tr><td><code>wfc:added-to-cart</code></td><td>Item added to cart</td><td><code>{productId, variantId, title, price, quantity, cart}</code></td></tr>
+        <tr><td><code>wfc:removed-from-cart</code></td><td>Item removed from cart</td><td><code>{product, index, cart}</code></td></tr>
+        <tr><td><code>wfc:products-loaded</code></td><td>Product list rendered</td><td><code>{products, container, count}</code></td></tr>
+        <tr><td><code>wfc:order-placed</code></td><td>Checkout success</td><td><code>{orderId, total}</code></td></tr>
+        <tr><td><code>wfc:auth-changed</code></td><td>Login or logout</td><td><code>{isLoggedIn, customer}</code></td></tr>
+        <tr><td><code>wfc:product-viewed</code></td><td>Product detail loaded</td><td><code>{productId}</code></td></tr>
+    </tbody>
+</table>
+
+<div class="callout callout-success">
+    <span class="callout-icon">🎯</span>
+    <div><strong>Animations, analytics, anything:</strong> Listen to these events in your JS to trigger animations, send analytics, show notifications, or build any custom behavior. The engine fires — you react.</div>
+</div>
+
+
+
+<!-- ════════════════════════════════════ -->
+<h2 id="css">🎨 CSS Classes</h2>
+<p class="section-desc">Auto-applied by the engine. Target these in your CSS to style engine-generated elements.</p>
+
+<table>
+    <thead><tr><th>Class</th><th>When Applied</th></tr></thead>
+    <tbody>
+        <tr><td><code>.wfc-wishlisted</code></td><td>On wishlist-toggle when product is in wishlist</td></tr>
+        <tr><td><code>.wfc-auto-count</code></td><td>Auto-injected count badge inside <code>cart-toggle</code></td></tr>
+        <tr><td><code>.wfc-open</code></td><td>On cart sidebar when visible</td></tr>
+        <tr><td><code>.wfc-cart-item</code></td><td>Each cart item wrapper</td></tr>
+        <tr><td><code>.wfc-item-img</code></td><td>Cart item image</td></tr>
+        <tr><td><code>.wfc-item-title</code></td><td>Cart item product name</td></tr>
+        <tr><td><code>.wfc-item-price</code></td><td>Cart item price</td></tr>
+        <tr><td><code>.wfc-remove</code></td><td>Remove (×) button</td></tr>
+        <tr><td><code>.wfc-sale-price</code></td><td>Sale price text</td></tr>
+        <tr><td><code>.wfc-original-price</code></td><td>Strikethrough original price</td></tr>
+        <tr><td><code>.wfc-variant-label</code></td><td>Variant group label text</td></tr>
+        <tr><td><code>.wfc-attribute-group</code></td><td>Variant option buttons container</td></tr>
+        <tr><td><code>.wfc-search-input</code></td><td>Auto-generated search input</td></tr>
+        <tr><td><code>.wfc-search-results</code></td><td>Search dropdown</td></tr>
+        <tr><td><code>.wfc-search-item</code></td><td>Individual search result</td></tr>
+        <tr><td><code>.wfc-skeleton-wrap</code></td><td>Skeleton loader container <span class="badge badge-opt">New</span></td></tr>
+        <tr><td><code>.wfc-skeleton-card</code></td><td>Single skeleton placeholder card</td></tr>
+        <tr><td><code>.wfc-skeleton-img</code></td><td>Skeleton image shimmer block</td></tr>
+        <tr><td><code>.wfc-skeleton-text</code></td><td>Skeleton text shimmer line</td></tr>
+        <tr><td><code>.wfc-checkout-form</code></td><td>Complete checkout form wrapper</td></tr>
+        <tr><td><code>.wfc-checkout-summary</code></td><td>Checkout order summary panel</td></tr>
+        <tr><td><code>.wfc-checkout-split</code></td><td>Split layout (form + summary side-by-side)</td></tr>
+        <tr><td><code>.wfc-step-indicator</code></td><td>Multi-step progress indicator</td></tr>
+        <tr><td><code>.wfc-account-dashboard</code></td><td>Account UI wrapper</td></tr>
+        <tr><td><code>.wfc-account-tab</code></td><td>Account tab button (has <code>.active</code> class)</td></tr>
+        <tr><td><code>.wfc-account-panel</code></td><td>Account tab content (has <code>.active</code> class)</td></tr>
+        <tr><td><code>.wfc-stat-card</code></td><td>Account overview stat card</td></tr>
+        <tr><td><code>.wfc-order-card</code></td><td>Order history card</td></tr>
+        <tr><td><code>.wfc-form-input</code></td><td>All form inputs in Complete UI</td></tr>
+    </tbody>
+</table>
+
+<!-- ════════════════════════════════════ -->
+<h2 id="js-api">🔧 JavaScript API</h2>
+<p class="section-desc">All methods accessible via <code>window.__commerceEngine</code>. Use for advanced customization.</p>
+
+<h3>Cart</h3>
+<table>
+    <thead><tr><th>Method</th><th>Returns / Does</th></tr></thead>
+    <tbody>
+        <tr><td><code>.addToCart(id, variantId, title, price, image, qty)</code></td><td>Add item</td></tr>
+        <tr><td><code>.removeItem(index)</code></td><td>Remove by index</td></tr>
+        <tr><td><code>.updateQty(index, qty)</code></td><td>Change quantity</td></tr>
+        <tr><td><code>.getCart()</code></td><td>Returns cart array</td></tr>
+        <tr><td><code>.getCartCount()</code></td><td>Returns item count</td></tr>
+        <tr><td><code>.getCartTotal()</code></td><td>Returns total price</td></tr>
+        <tr><td><code>.clearCart()</code></td><td>Empty cart</td></tr>
+        <tr><td><code>.showCart()</code> / <code>.hideCart()</code> / <code>.toggleCart()</code></td><td>Sidebar control</td></tr>
+    </tbody>
+</table>
+
+<h3>Wishlist</h3>
+<table>
+    <thead><tr><th>Method</th><th>Returns / Does</th></tr></thead>
+    <tbody>
+        <tr><td><code>.toggleWishlist(productId)</code></td><td>Add/remove</td></tr>
+        <tr><td><code>.getWishlist()</code></td><td>Returns IDs array</td></tr>
+        <tr><td><code>.syncWishlist()</code></td><td>Sync with server <span class="badge badge-auth">Auth</span></td></tr>
+    </tbody>
+</table>
+
+<h3>Auth &amp; Profile</h3>
+<table>
+    <thead><tr><th>Method</th><th>Returns / Does</th></tr></thead>
+    <tbody>
+        <tr><td><code>.showAuthModal('login')</code></td><td>Open login/register modal</td></tr>
+        <tr><td><code>.logout()</code></td><td>Logout + reset UI</td></tr>
+        <tr><td><code>.getCustomerToken()</code></td><td>JWT token or null</td></tr>
+        <tr><td><code>.getCustomer()</code></td><td>Customer profile object</td></tr>
+        <tr><td><code>.updateProfile(data)</code></td><td>Update profile</td></tr>
+        <tr><td><code>.changePassword(old, new)</code></td><td>Change password</td></tr>
+        <tr><td><code>.getAddresses()</code> / <code>.addAddress(data)</code></td><td>Address CRUD</td></tr>
+        <tr><td><code>.updateAddress(id, data)</code> / <code>.deleteAddress(id)</code></td><td>Address CRUD</td></tr>
+        <tr><td><code>.getOrders(params)</code></td><td>Order history</td></tr>
+    </tbody>
+</table>
+
+<h3>Coupons &amp; Utilities</h3>
+<table>
+    <thead><tr><th>Method</th><th>Returns / Does</th></tr></thead>
+    <tbody>
+        <tr><td><code>.applyCoupon(code)</code></td><td>Apply coupon</td></tr>
+        <tr><td><code>.removeCoupon()</code></td><td>Remove coupon</td></tr>
+        <tr><td><code>.getAppliedCoupon()</code></td><td>Current coupon object</td></tr>
+        <tr><td><code>.api(endpoint, options)</code></td><td>Make API call (auto-auth)</td></tr>
+        <tr><td><code>.getImageUrl(url)</code></td><td>Resolve image URL</td></tr>
+        <tr><td><code>.getCurrencySymbol()</code></td><td>Currency symbol</td></tr>
+    </tbody>
+</table>
+
+<!-- ════════════════════════════════════ -->
+<h2 id="endpoints">🔗 API Endpoints</h2>
+<p class="section-desc">All prefixed with <code>/api/v1/</code>. Auth endpoints need <code>Authorization: Bearer &lt;token&gt;</code> (auto-added by engine).</p>
+
+<h3>Public</h3>
+<table>
+    <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead>
+    <tbody>
+        <tr><td><code>GET</code></td><td><code>/public/products</code></td><td>List products (supports filters)</td></tr>
+        <tr><td><code>GET</code></td><td><code>/public/products/:slug</code></td><td>Single product</td></tr>
+        <tr><td><code>GET</code></td><td><code>/public/categories</code></td><td>All categories</td></tr>
+        <tr><td><code>GET</code></td><td><code>/public/search?q=</code></td><td>Search</td></tr>
+        <tr><td><code>POST</code></td><td><code>/public/validate-coupon</code></td><td>Validate coupon</td></tr>
+        <tr><td><code>POST</code></td><td><code>/checkout/create-payment-intent</code></td><td>Create order</td></tr>
+    </tbody>
+</table>
+
+<h3>Protected <span class="badge badge-auth">Auth Required</span></h3>
+<table>
+    <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead>
+    <tbody>
+        <tr><td><code>POST</code></td><td><code>/customer/auth/login</code></td><td>Login</td></tr>
+        <tr><td><code>POST</code></td><td><code>/customer/auth/register</code></td><td>Register</td></tr>
+        <tr><td><code>GET/POST/DELETE</code></td><td><code>/customer/wishlist</code></td><td>Wishlist CRUD</td></tr>
+        <tr><td><code>GET/PUT</code></td><td><code>/customer/profile</code></td><td>Profile management</td></tr>
+        <tr><td><code>GET</code></td><td><code>/customer/orders</code></td><td>Order history</td></tr>
+        <tr><td><code>GET/POST/PUT/DELETE</code></td><td><code>/customer/addresses</code></td><td>Address management</td></tr>
+    </tbody>
+</table>
+
+<hr>
+<p style="text-align:center; color:var(--text-muted); font-size:12px; padding:16px 0;">
+    <strong>AURA Commerce Engine</strong> — v3.0 — Element-agnostic. Plug & Play. Style it your way. ⚡
+</p>
+
+</div>
+
+<script>
+    // Active sidebar tracking
+    const links = document.querySelectorAll('.sidebar-link');
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                links.forEach(l => l.classList.remove('active'));
+                const a = document.querySelector(`.sidebar-link[href="#${entry.target.id}"]`);
+                if (a) a.classList.add('active');
+            }
+        });
+    }, { rootMargin: '-20% 0px -60% 0px' });
+    document.querySelectorAll('h2[id]').forEach(h => observer.observe(h));
+</script>
+
+</body>
+</html>

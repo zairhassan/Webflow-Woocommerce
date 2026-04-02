@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDK Test | Unified Wishlist Page</title>
+    <!-- Premium Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --aura-theme: #F27D26; }
+        body { margin: 0; padding: 0; background: #fff; font-family: 'Inter', sans-serif; }
+        .nav { padding: 20px 5%; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 900; }
+        .container { max-width: 1200px; margin: 0 auto; }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="logo">Aura Boutique</div>
+        <div>
+           <a href="test-shop-page.html" style="text-decoration:none; color:#111; font-weight:700; font-size:13px;">SHOP</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- 
+            ONE-LINE DEPLOYMENT:
+            Just add data-commerce="wishlist-page" 
+        -->
+        <div data-commerce="wishlist-page">
+            <div style="padding:100px; text-align:center; color:#999;">
+                Initializing Premium Wishlist Experience...
+            </div>
+        </div>
+    </div>
+
+    <!-- SDK Script -->
+    <script id="ce-engine-script" 
+            src="../sdk/engine_v5_final.js" 
+            data-store-key="pk_live_6bf90196f1ba428e8f1ff44fa3d506df"
+            data-api-url="http://127.0.0.1:5001">
+    </script>
+
+</body>
+</html>
