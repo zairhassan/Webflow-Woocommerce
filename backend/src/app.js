@@ -29,15 +29,18 @@ app.use((req, res, next) => {
     next();
 });
 
+// IMPORTANT: CORS must be at the very top for Vercel/Production
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Store-Key'],
+    credentials: true
+}));
+
 // Security
 app.use(helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
     contentSecurityPolicy: false
-}));
-app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Store-Key']
 }));
 
 // Serve uploaded images
