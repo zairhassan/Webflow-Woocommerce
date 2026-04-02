@@ -26,7 +26,7 @@
     // --- Configuration ---
     const SCRIPT_TAG = document.currentScript;
     const STORE_KEY = SCRIPT_TAG ? SCRIPT_TAG.getAttribute('data-store-key') : null;
-    const API_BASE = SCRIPT_TAG ? (SCRIPT_TAG.getAttribute('data-api-url') || 'http://127.0.0.1:5001') : 'http://127.0.0.1:5001';
+    const API_BASE = SCRIPT_TAG ? (SCRIPT_TAG.getAttribute('data-api-url') || 'https://webflow-woocommerce.vercel.app') : 'https://webflow-woocommerce.vercel.app';
     const CURRENCY_SYMBOL = SCRIPT_TAG ? (SCRIPT_TAG.getAttribute('data-currency') || '$') : '$';
 
     if (!STORE_KEY) {
