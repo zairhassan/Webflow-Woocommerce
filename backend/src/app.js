@@ -43,8 +43,9 @@ app.use(helmet({
     contentSecurityPolicy: false
 }));
 
-// Serve uploaded images
+// Serve uploaded images and SDK
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use('/sdk', express.static(path.join(__dirname, '../../sdk')));
 
 // Webhook route needs raw body for Stripe signature verification
 app.use('/api/v1/webhooks', express.raw({ type: 'application/json' }));
