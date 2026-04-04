@@ -48,7 +48,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Robust SDK serving via Express route (Fixes Vercel 404s)
 app.get('/engine.js', (req, res) => {
-    const sdkPath = path.join(__dirname, '../sdk/engine.js');
+    const sdkPath = path.join(__dirname, '../api/engine.js');
     res.setHeader('Content-Type', 'application/javascript');
     res.sendFile(sdkPath);
 });
