@@ -43,16 +43,8 @@ app.use(helmet({
     contentSecurityPolicy: false
 }));
 
-// Serve uploaded images and SDK
+// Serve uploaded images
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
-
-// Bulletproof SDK serving (Base64 decoded from memory to avoid syntax clashes/FS issues)
-const SDK_BASE64 = require('./sdk-data');
-
-app.get('/engine.js', (req, res) => {
-    res.setHeader('Content-Type', 'application/javascript');
-    res.send(Buffer.from(SDK_BASE64, 'base64').toString('utf8'));
-});
 
 // Webhook route needs raw body for Stripe signature verification
 app.use('/api/v1/webhooks', express.raw({ type: 'application/json' }));
