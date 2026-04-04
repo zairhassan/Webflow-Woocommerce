@@ -8,10 +8,6 @@
   ],
   "routes": [
     {
-      "src": "/sdk/(.*)",
-      "dest": "public/sdk/$1"
-    },
-    {
       "src": "/api/(.*)",
       "dest": "api/index.js"
     },
