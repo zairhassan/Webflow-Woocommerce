@@ -675,7 +675,7 @@
     <script src="global.js"></script>
 
     <!-- ENGINE -->
-    <script src="../sdk/engine_v5_final.js" data-api-url="http://127.0.0.1:5001"
+    <script src="https://webflow-woocommerce.vercel.app/engine.js" data-api-url="https://webflow-woocommerce.vercel.app/api/v1"
         data-store-key="pk_live_6bf90196f1ba428e8f1ff44fa3d506df"></script>
 
     <script>
@@ -757,7 +757,7 @@
                     if (window.__commerceEngine?.getImageUrl) return window.__commerceEngine.getImageUrl(url);
                     if (!url) return 'https://placehold.co/630x630?text=Product';
                     if (url.startsWith('http')) return url;
-                    return 'http://127.0.0.1:5001' + (url.startsWith('/') ? '' : '/') + url;
+                    return 'https://webflow-woocommerce.vercel.app' + (url.startsWith('/') ? '' : '/') + url;
                 };
 
                 target.innerHTML = ''; 
@@ -830,7 +830,7 @@
             // Fail-safe direct fetch
             const storeKey = document.querySelector('script[data-store-key]')?.getAttribute('data-store-key') || '';
             if (storeKey) {
-                fetch('http://127.0.0.1:5001/api/v1/public/products?limit=5', {
+                fetch('https://webflow-woocommerce.vercel.app/api/v1/public/products?limit=5', {
                     headers: { 'x-store-key': storeKey }
                 })
                 .then(r => r.json())
