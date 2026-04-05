@@ -117,7 +117,9 @@
 
     // --- API Helpers ---
     async function api(endpoint, options = {}) {
-        const url = `${API_BASE}/api/v1${endpoint}`;
+        // Ensure API_BASE doesn't end with /api/v1 to avoid doubling up
+        const base = API_BASE.replace(/\/api\/v1\/?$/, '');
+        const url = `${base}/api/v1${endpoint}`;
         const headers = { 'Content-Type': 'application/json', 'X-Store-Key': STORE_KEY, ...options.headers };
         const token = getCustomerToken();
         if (token) headers['Authorization'] = `Bearer ${token}`;
