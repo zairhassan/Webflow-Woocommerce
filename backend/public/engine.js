@@ -24,7 +24,7 @@
     'use strict';
 
     // --- Configuration ---
-    const SCRIPT_TAG = document.currentScript;
+    const SCRIPT_TAG = document.currentScript || document.getElementById('ce-engine-script') || Array.from(document.getElementsByTagName('script')).find(s => s.src.includes('engine.js'));
     const STORE_KEY = SCRIPT_TAG ? SCRIPT_TAG.getAttribute('data-store-key') : null;
     const API_BASE = SCRIPT_TAG ? (SCRIPT_TAG.getAttribute('data-api-url') || 'https://webflow-woocommerce.vercel.app') : 'https://webflow-woocommerce.vercel.app';
     const CURRENCY_SYMBOL = SCRIPT_TAG ? (SCRIPT_TAG.getAttribute('data-currency') || '$') : '$';
@@ -370,11 +370,11 @@
                 body.lastName = document.getElementById('wfc-auth-lastname')?.value || '';
             }
 
-            const data = await api(`/ customer / ${mode} `, { method: 'POST', body });
+            const data = await api(`/customer/${mode}`, { method: 'POST', body });
             saveCustomer({ token: data.token, email: data.customer.email, name: data.customer.firstName || email.split('@')[0] });
             closeAuth();
             updateAccountUI();
-            showToast(`Welcome${data.customer.firstName ? ', ' + data.customer.firstName : ''} !`);
+            showToast(`Welcome${data.customer.firstName ? ', ' + data.customer.firstName : ''}!`);
         } catch (error) {
             if (errorEl) { errorEl.textContent = error.message; errorEl.style.display = 'block'; }
             if (submitBtn) { submitBtn.textContent = mode === 'login' ? 'Sign In' : 'Create Account'; submitBtn.disabled = false; }
@@ -425,7 +425,7 @@
             containers.forEach(container => {
                 const topLevel = data.categories.filter(c => !c.parentId);
                 container.innerHTML = `
-            < div class="wfc-category-list" >
+            <div class="wfc-category-list">
                 <button class="wfc-cat-btn active" data-cat-slug="">All Products</button>
             ${topLevel.map(c => `
               <button class="wfc-cat-btn" data-cat-slug="${c.slug}">${c.name} <span class="wfc-cat-count">(${c.productCount})</span></button>
@@ -435,7 +435,7 @@
                 }).join('')}
             `).join('')
                     }
-          </div >
+          </div>
             `;
 
                 // Bind click events
@@ -470,17 +470,14 @@
                 // Filter by category
                 const effectiveCategory = categorySlug || catSlug;
                 if (effectiveCategory) {
-                    filteredProducts = filteredProducts.filter(p => p.category?.slug === effectiveCategory);
+                    filteredProducts = filteredProducts.filter(p => 
+                        p.categories?.some(c => c.slug === effectiveCategory)
+                    );
                 }
 
-                // Filter by featured if requested
+                // Featured filter
                 if (type === 'featured') {
                     filteredProducts = filteredProducts.filter(p => p.featured === true);
-                }
-
-                // Filter by collection slug if requested
-                if (collection) {
-                    filteredProducts = filteredProducts.filter(p => p.category?.slug === collection);
                 }
 
                 const template = container.querySelector('[data-commerce="product-template"]');
@@ -510,13 +507,13 @@
                     const links = item.querySelectorAll('[data-commerce="product-link"]');
                     links.forEach(link => {
                         const baseUrl = link.getAttribute('data-base-url') || 'product.html';
-                        link.href = baseUrl.includes('?') ? `${baseUrl}& slug=${product.slug} ` : `${baseUrl}?slug = ${product.slug} `;
+                        link.href = baseUrl.includes('?') ? `${baseUrl}&slug=${product.slug}` : `${baseUrl}?slug=${product.slug}`;
                     });
 
                     // Support for entire card as a link
                     if (item.getAttribute('data-commerce') === 'product-item' && item.tagName === 'A') {
                         const baseUrl = item.getAttribute('data-base-url') || 'product.html';
-                        item.href = baseUrl.includes('?') ? `${baseUrl}& slug=${product.slug} ` : `${baseUrl}?slug = ${product.slug} `;
+                        item.href = baseUrl.includes('?') ? `${baseUrl}&slug=${product.slug}` : `${baseUrl}?slug=${product.slug}`;
                     }
 
                     container.appendChild(item);
@@ -548,7 +545,7 @@
 
             try {
                 container.classList.add('ce-is-updating');
-                const data = await api(`/ public / products / ${slug} `);
+                const data = await api(`/public/products/${slug}`);
                 const product = data.product;
 
                 fillProductFields(container, product);
@@ -803,7 +800,7 @@
                 variantSelect.value = '';
                 if (infoEl) {
                     const remaining = Object.keys(attrGroups).filter(k => !selectedAttrs[k]);
-                    infoEl.innerHTML = remaining.length > 0 ? `< span class="wfc-variant-hint" > Select ${remaining.join(', ')}</span > ` : '';
+                    infoEl.innerHTML = remaining.length > 0 ? `<span class="wfc-variant-hint">Select ${remaining.join(', ')}</span>` : '';
                     infoEl.style.display = remaining.length > 0 ? 'flex' : 'none';
                 }
 
@@ -901,7 +898,7 @@
             return;
         }
         container.innerHTML = reviews.map(r => `
-            < div class="wfc-review" >
+            <div class="wfc-review">
                 <div class="wfc-review-header">
                     <span class="wfc-stars">${'<span class="wfc-star-full">&#9733;</span>'.repeat(r.rating)}${'<span class="wfc-star-empty">&#9734;</span>'.repeat(5 - r.rating)}</span>
                     <strong>${r.author || 'Anonymous'}</strong>
@@ -909,7 +906,7 @@
                 </div>
         ${r.title ? `<div class="wfc-review-title">${r.title}</div>` : ''}
         <p class="wfc-review-content">${r.content || ''}</p>
-      </div >
+      </div>
             `).join('');
     }
 
@@ -972,11 +969,11 @@
                 const items = getLocalWishlist();
                 const isInWishlist = items.includes(productId);
                 if (isInWishlist) {
-                    await api(`/ customer / wishlist / ${productId} `, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token} ` } });
+                    await api(`/customer/wishlist/${productId}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
                     saveLocalWishlist(items.filter(id => id !== productId));
                     showToast('Removed from wishlist');
                 } else {
-                    await api('/customer/wishlist', { method: 'POST', headers: { 'Authorization': `Bearer ${token} ` }, body: { productId } });
+                    await api('/customer/wishlist', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: { productId } });
                     items.push(productId);
                     saveLocalWishlist(items);
                     showToast('Added to wishlist');
@@ -1053,21 +1050,21 @@
 
                 searchTimeout = setTimeout(async () => {
                     try {
-                        const data = await api(`/ public / search ? q = ${encodeURIComponent(q)} `);
+                        const data = await api(`/public/search?q=${encodeURIComponent(q)}`);
                         if (data.results.length === 0) {
                             results.innerHTML = '<div class="wfc-search-empty">No products found</div>';
                         } else {
                             results.innerHTML = data.results.map(p => {
                                 const price = p.salePrice
-                                    ? `< span class="wfc-original-price" > ${CURRENCY_SYMBOL}${p.price.toFixed(2)}</span > ${CURRENCY_SYMBOL}${p.salePrice.toFixed(2)} `
-                                    : `${CURRENCY_SYMBOL}${p.price.toFixed(2)} `;
-                                return `< a href = "/product/${p.slug}" class="wfc-search-item" >
+                                    ? `<span class="wfc-original-price">${CURRENCY_SYMBOL}${p.price.toFixed(2)}</span>${CURRENCY_SYMBOL}${p.salePrice.toFixed(2)}`
+                                    : `${CURRENCY_SYMBOL}${p.price.toFixed(2)}`;
+                                return `<a href="/product/${p.slug}" class="wfc-search-item">
             ${p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.title}" class="wfc-search-img">` : '<div class="wfc-search-img wfc-placeholder"></div>'}
         <div class="wfc-search-info">
             <div class="wfc-search-title">${p.title}</div>
             <div class="wfc-search-price">${price}</div>
         </div>
-                                </a > `;
+                                </a>`;
                             }).join('');
                         }
                         results.style.display = 'block';

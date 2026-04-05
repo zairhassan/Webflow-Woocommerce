@@ -470,7 +470,9 @@
                 // Filter by category
                 const effectiveCategory = categorySlug || catSlug;
                 if (effectiveCategory) {
-                    filteredProducts = filteredProducts.filter(p => p.category?.slug === effectiveCategory);
+                    filteredProducts = filteredProducts.filter(p => 
+                        p.categories?.some(c => c.slug === effectiveCategory)
+                    );
                 }
 
                 // Featured filter

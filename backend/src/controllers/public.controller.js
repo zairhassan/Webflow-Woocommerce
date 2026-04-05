@@ -473,14 +473,6 @@ const getStorePublicInfo = async (req, res, next) => {
             }
         });
 
-        if (stripeGateway && stripeGateway.config) {
-            if (stripeGateway.config.testMode) {
-                store.stripePublicKey = stripeGateway.config.testPublicKey || stripeGateway.config.publicKey;
-            } else {
-                store.stripePublicKey = stripeGateway.config.publicKey;
-            }
-        }
-
         res.json(store);
     } catch (error) {
         next(error);
